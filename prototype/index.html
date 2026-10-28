@@ -1,0 +1,1333 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tiket Fasilitas HQ</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: tiga kolom proses (HP pelapor → notifikasi → panel admin), stepper alur di atas. Token dari design system Aset Kantor Alpro. */
+:root{
+  --page:#f8fafc; --surface:#ffffff; --paper:#ffffff; --paper-ink:#0f172a;
+  --ink:#0f172a; --muted:#64748b; --line:#e2e8f0;
+  --brand-50:#fff7ed; --brand-100:#ffedd5; --brand-200:#fed7aa; --brand-300:#fdba74; --brand-400:#fb923c; --brand-500:#f97316; --brand-600:#ea580c; --brand-text:#c2410c;
+  --slate-50:#f8fafc; --slate-100:#f1f5f9; --slate-200:#e2e8f0; --slate-400:#94a3b8; --slate-600:#475569; --slate-700:#334155; --slate-900:#0f172a;
+  --red-50:#fef2f2; --red-200:#fecaca; --red-500:#ef4444; --red-600:#dc2626; --red-text:#b91c1c;
+  --amber-50:#fffbeb; --amber-200:#fde68a; --amber-text:#b45309;
+  --emerald-50:#ecfdf5; --emerald-200:#a7f3d0; --emerald-text:#047857;
+  --sky-50:#f0f9ff; --sky-200:#bae6fd; --sky-text:#0369a1;
+  --violet-50:#f5f3ff; --violet-200:#ddd6fe; --violet-text:#6d28d9;
+  --bezel:#1e293b; --viewfinder:#0f172a; --on-dark:#f8fafc;
+  --shadow-card:0 1px 3px 0 #e2e8f080, 0 1px 2px -1px #e2e8f080;
+  --shadow-primary:0 1px 2px 0 #f9731633;
+  --shadow-pop:0 10px 30px -10px #0f172a40;
+  --font:"Plus Jakarta Sans","Inter",ui-sans-serif,system-ui,sans-serif;
+  --r-lg:8px; --r-xl:12px; --r-2xl:16px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --page:#0b1220; --surface:#111a2b; --ink:#e6ebf2; --muted:#9aa6b8; --line:#2a3546;
+    --brand-50:#2a1a0e; --brand-100:#3b2412; --brand-200:#5c3616; --brand-300:#8a4b1a; --brand-text:#fdba74;
+    --slate-50:#162135; --slate-100:#1c2940; --slate-200:#2a3851; --slate-400:#8391a7; --slate-600:#aeb9c9; --slate-700:#c6cfdb;
+    --red-50:#33161a; --red-200:#6b252c; --red-text:#fca5a5;
+    --amber-50:#2e2410; --amber-200:#5e4818; --amber-text:#fcd34d;
+    --emerald-50:#0f2a22; --emerald-200:#1a5240; --emerald-text:#6ee7b7;
+    --sky-50:#0f2333; --sky-200:#1d4561; --sky-text:#7dd3fc;
+    --violet-50:#231a3a; --violet-200:#43357a; --violet-text:#c4b5fd;
+    --bezel:#2a3546; --viewfinder:#020617;
+    --shadow-card:0 1px 3px 0 #00000059, 0 1px 2px -1px #00000059;
+    --shadow-pop:0 10px 30px -10px #000000a0;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --page:#0b1220; --surface:#111a2b; --ink:#e6ebf2; --muted:#9aa6b8; --line:#2a3546;
+  --brand-50:#2a1a0e; --brand-100:#3b2412; --brand-200:#5c3616; --brand-300:#8a4b1a; --brand-text:#fdba74;
+  --slate-50:#162135; --slate-100:#1c2940; --slate-200:#2a3851; --slate-400:#8391a7; --slate-600:#aeb9c9; --slate-700:#c6cfdb;
+  --red-50:#33161a; --red-200:#6b252c; --red-text:#fca5a5;
+  --amber-50:#2e2410; --amber-200:#5e4818; --amber-text:#fcd34d;
+  --emerald-50:#0f2a22; --emerald-200:#1a5240; --emerald-text:#6ee7b7;
+  --sky-50:#0f2333; --sky-200:#1d4561; --sky-text:#7dd3fc;
+  --violet-50:#231a3a; --violet-200:#43357a; --violet-text:#c4b5fd;
+  --bezel:#2a3546; --viewfinder:#020617;
+  --shadow-card:0 1px 3px 0 #00000059, 0 1px 2px -1px #00000059;
+  --shadow-pop:0 10px 30px -10px #000000a0;
+  color-scheme:dark;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{background:var(--page)}
+body{color:var(--ink);font-family:var(--font);font-size:14px;line-height:20px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:16px 48px}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none;padding:0}
+:focus-visible{outline:2px solid var(--brand-500);outline-offset:2px;border-radius:6px}
+h1,h2,h3,p,dl{margin:0}
+h1,h2,h3{text-wrap:balance}
+.num{font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)}
+.caption{font-size:12px;line-height:16px;color:var(--muted)}
+.ic{flex:none;display:inline-block;vertical-align:middle}
+.wrap{max-width:1480px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+
+/* Top bar */
+.topbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.logo{width:40px;height:40px;border-radius:9999px;background:#ffffff;flex:none;display:grid;place-items:center;overflow:hidden}
+.logo img{width:100%;height:100%;display:block}
+.logo.sm{width:28px;height:28px}
+.brandname{display:flex;flex-direction:column;min-width:0}
+.brandname b{font-size:18px;line-height:24px;font-weight:800;letter-spacing:-.01em}
+.topbar .spacer{flex:1}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:var(--r-xl);padding:10px 16px;font-weight:600;font-size:14px;line-height:20px;transition:background .15s,border-color .15s,transform .05s;white-space:nowrap}
+.btn:active{transform:scale(.98)}
+.btn[disabled]{cursor:not-allowed;opacity:.6;transform:none}
+.btn-primary{background:var(--brand-500);color:#ffffff;box-shadow:var(--shadow-primary)}
+.btn-primary:hover:not([disabled]){background:var(--brand-600)}
+.btn-primary[disabled]{background:var(--brand-300);opacity:1}
+.btn-secondary{background:var(--surface);border:1px solid var(--line);color:var(--ink)}
+.btn-secondary:hover:not([disabled]){background:var(--slate-50)}
+.btn-soft{background:var(--brand-50);border:1px solid var(--brand-200);color:var(--brand-text)}
+.btn-soft:hover:not([disabled]){background:var(--brand-100)}
+.btn-ghost{color:var(--slate-600)}
+.btn-ghost:hover:not([disabled]){background:var(--slate-100)}
+.btn-danger{background:var(--red-600);color:#ffffff}
+.btn-sm{padding:6px 12px;font-size:12px;line-height:16px;border-radius:10px}
+.btn-block{width:100%}
+.linkbtn{color:var(--brand-text);font-weight:600;font-size:12px}
+.linkbtn:hover{text-decoration:underline}
+
+/* Card */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-2xl);box-shadow:var(--shadow-card)}
+.card-h{display:flex;align-items:center;gap:12px;padding:14px 20px;border-bottom:1px solid var(--line)}
+.card-h h2{font-size:16px;line-height:24px;font-weight:700}
+.card-b{padding:20px}
+
+/* Chips */
+.chip{display:inline-flex;align-items:center;gap:4px;border-radius:9999px;padding:2px 8px;font-size:12px;line-height:16px;font-weight:600;border:1px solid var(--slate-200);background:var(--slate-100);color:var(--slate-600);white-space:nowrap}
+.chip.sky{background:var(--sky-50);border-color:var(--sky-200);color:var(--sky-text)}
+.chip.violet{background:var(--violet-50);border-color:var(--violet-200);color:var(--violet-text)}
+.chip.brand{background:var(--brand-50);border-color:var(--brand-200);color:var(--brand-text)}
+.chip.amber{background:var(--amber-50);border-color:var(--amber-200);color:var(--amber-text)}
+.chip.emerald{background:var(--emerald-50);border-color:var(--emerald-200);color:var(--emerald-text)}
+.chip.red{background:var(--red-50);border-color:var(--red-200);color:var(--red-text)}
+
+/* Callout */
+.callout{display:flex;gap:10px;border-radius:var(--r-xl);padding:12px 14px;border:1px solid var(--sky-200);background:var(--sky-50);color:var(--ink)}
+.callout .ic{margin-top:2px;color:var(--sky-text)}
+.callout.amber{border-color:var(--amber-200);background:var(--amber-50)} .callout.amber .ic{color:var(--amber-text)}
+.callout.red{border-color:var(--red-200);background:var(--red-50)} .callout.red .ic{color:var(--red-text)}
+.callout.emerald{border-color:var(--emerald-200);background:var(--emerald-50)} .callout.emerald .ic{color:var(--emerald-text)}
+.callout.brand{border-color:var(--brand-200);background:var(--brand-50)} .callout.brand .ic{color:var(--brand-text)}
+.callout b{font-weight:700}
+
+/* Fields */
+.field{display:flex;flex-direction:column;gap:6px}
+.field>label,.flabel{font-weight:600;color:var(--slate-700)}
+.req{color:var(--red-500)}
+.input,.select,.textarea{width:100%;border:1px solid var(--line);background:var(--surface);border-radius:var(--r-xl);padding:10px 12px;font-size:14px;line-height:20px;outline:none;transition:border-color .15s,box-shadow .15s}
+.textarea{resize:vertical;min-height:76px}
+.input::placeholder,.textarea::placeholder{color:var(--slate-400)}
+.input:focus,.select:focus,.textarea:focus{border-color:var(--brand-400);box-shadow:0 0 0 4px var(--brand-100)}
+.invalid{border-color:var(--red-500)!important}
+.err{color:var(--red-text);font-size:12px;line-height:16px}
+.hint{font-size:12px;line-height:16px;color:var(--muted)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.stack{display:flex;flex-direction:column;gap:12px}
+.stack-lg{display:flex;flex-direction:column;gap:18px}
+.row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+
+/* Tabs */
+.tabs{display:inline-flex;gap:4px;padding:4px;background:var(--slate-100);border-radius:var(--r-xl);flex-wrap:wrap}
+.tab{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:var(--r-lg);font-weight:600;color:var(--slate-600)}
+.tab:hover{color:var(--ink)}
+.tab[aria-selected="true"]{background:var(--surface);color:var(--brand-text);box-shadow:var(--shadow-card)}
+.count{font-size:11px;line-height:16px;font-weight:600;padding:0 6px;border-radius:9999px;background:var(--slate-200);color:var(--slate-600)}
+.tab[aria-selected="true"] .count{background:var(--brand-100);color:var(--brand-text)}
+
+/* Stepper */
+.flow{padding:16px 20px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,380px);gap:20px;align-items:center}
+.steps{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;list-style:none;margin:0;padding:0}
+.step{position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}
+.step .dot{width:40px;height:40px;border-radius:9999px;display:grid;place-items:center;border:2px solid var(--line);background:var(--surface);color:var(--slate-400);position:relative;z-index:1}
+.step::before{content:"";position:absolute;top:19px;left:calc(-50% + 20px);right:calc(50% + 20px);height:2px;background:var(--line)}
+.step:first-child::before{display:none}
+.step.done::before,.step.current::before{background:var(--brand-400)}
+.step.done .dot{background:var(--brand-500);border-color:var(--brand-500);color:#ffffff}
+.step.current .dot{border-color:var(--brand-500);color:var(--brand-text);background:var(--brand-50);box-shadow:0 0 0 4px var(--brand-100)}
+.step b{font-size:12px;line-height:16px;font-weight:700}
+.step span{font-size:11px;line-height:14px;color:var(--muted)}
+.step.todo b{color:var(--muted)}
+.guide{display:flex;flex-direction:column;gap:10px;border-left:1px solid var(--line);padding-left:20px}
+.guide p{color:var(--slate-700)}
+.eyebrow{font-size:11px;line-height:16px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--brand-text)}
+
+/* Columns */
+.switch{display:none}
+.cols{display:grid;gap:20px;grid-template-columns:380px minmax(0,340px) minmax(0,1fr);align-items:start}
+.col-notif .tab{padding:6px 9px}
+.col{min-width:0}
+.colhead{display:flex;align-items:center;gap:8px;margin-bottom:10px;padding-inline:4px}
+.colhead .n{width:22px;height:22px;border-radius:9999px;background:var(--brand-500);color:#ffffff;font-size:12px;font-weight:700;display:grid;place-items:center}
+.colhead b{font-weight:700}
+@media (max-width:1279px){
+  .cols{grid-template-columns:380px minmax(0,1fr)}
+  .cols[data-right="admin"] .col-notif{display:none}
+  .cols[data-right="notif"] .col-admin{display:none}
+  .switch.mid{display:flex}
+}
+@media (max-width:899px){
+  .cols{grid-template-columns:minmax(0,1fr)}
+  .cols .col{display:none!important}
+  .cols[data-view="pelapor"] .col-pelapor,.cols[data-view="notif"] .col-notif,.cols[data-view="admin"] .col-admin{display:block!important}
+  .switch.mid{display:none}
+  .switch.small{display:flex}
+  .flow{grid-template-columns:minmax(0,1fr)}
+  .guide{border-left:0;padding-left:0;border-top:1px solid var(--line);padding-top:14px}
+  .step span{display:none}
+  .step .dot{width:32px;height:32px}
+  .step::before{top:15px;left:calc(-50% + 16px);right:calc(50% + 16px)}
+}
+
+/* Phone */
+.device{background:var(--bezel);border-radius:44px;padding:10px;box-shadow:var(--shadow-pop)}
+.screen{background:var(--page);border-radius:34px;overflow:hidden;height:800px;display:flex;flex-direction:column}
+.addr{display:flex;align-items:center;gap:6px;margin:10px 14px 6px;padding:6px 12px;border-radius:9999px;background:var(--slate-100);font-size:12px;line-height:16px;color:var(--slate-600);min-width:0}
+.addr span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.apphead{display:flex;align-items:center;gap:10px;padding:8px 16px 12px;border-bottom:1px solid var(--line);background:var(--surface)}
+.apphead b{display:block;font-weight:800;font-size:15px;line-height:20px}
+.pbody{flex:1;overflow:auto;padding:16px;display:flex;flex-direction:column;gap:16px}
+.pnav{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--line);background:var(--surface);padding:6px 8px 10px}
+.pnav button{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px;border-radius:var(--r-lg);font-size:11px;line-height:14px;font-weight:600;color:var(--muted)}
+.pnav button[aria-current="true"]{color:var(--brand-text)}
+@media (max-width:899px){
+  .device{background:none;padding:0;border-radius:0;box-shadow:none}
+  .screen{height:auto;min-height:640px;border-radius:var(--r-2xl);border:1px solid var(--line)}
+  .pbody{overflow:visible}
+}
+.viewfinder{position:relative;height:200px;border-radius:var(--r-2xl);background:var(--viewfinder);overflow:hidden;display:grid;place-items:center}
+.viewfinder .frame{width:140px;height:140px;border-radius:18px;border:3px solid var(--brand-400);position:relative}
+.viewfinder .line{position:absolute;left:8px;right:8px;height:2px;background:var(--brand-400);top:10%;animation:scan 2.2s ease-in-out infinite alternate}
+.viewfinder p{position:absolute;bottom:12px;left:0;right:0;text-align:center;color:var(--on-dark);font-size:12px;font-weight:600}
+@keyframes scan{to{top:88%}}
+@media (prefers-reduced-motion: reduce){.viewfinder .line{animation:none;top:50%}}
+.floor{display:flex;flex-direction:column;gap:8px}
+.floor h3{font-size:12px;line-height:16px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.locgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.locbtn{display:flex;align-items:center;gap:8px;text-align:left;padding:10px;border-radius:var(--r-xl);border:1px solid var(--line);background:var(--surface);font-weight:600;font-size:12px;line-height:16px}
+.locbtn:hover{border-color:var(--brand-300);background:var(--brand-50)}
+.locbtn .ic{color:var(--brand-text)}
+.lockloc{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border-radius:var(--r-xl);background:var(--brand-50);border:1px solid var(--brand-200)}
+.lockloc .pin{width:36px;height:36px;border-radius:10px;background:var(--surface);display:grid;place-items:center;color:var(--brand-text);flex:none}
+.lockloc b{display:block;font-weight:700}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.seg button{padding:9px 10px;border-radius:var(--r-xl);border:1px solid var(--line);background:var(--surface);font-weight:600;font-size:13px;text-align:center}
+.seg button[aria-pressed="true"]{border-color:var(--brand-500);background:var(--brand-50);color:var(--brand-text)}
+.qchips{display:flex;flex-wrap:wrap;gap:6px}
+.qchip{padding:7px 12px;border-radius:9999px;border:1px solid var(--line);background:var(--surface);font-size:12px;line-height:16px;font-weight:600;color:var(--slate-700)}
+.qchip:hover{border-color:var(--brand-300)}
+.qchip[aria-pressed="true"]{background:var(--brand-500);border-color:var(--brand-500);color:#ffffff}
+.photos{display:flex;gap:8px;flex-wrap:wrap}
+.ph{position:relative;width:76px;height:76px;border-radius:var(--r-xl);overflow:hidden;border:1px solid var(--line);background:var(--slate-100)}
+.ph img{width:100%;height:100%;object-fit:cover;display:block}
+.ph .rm{position:absolute;top:4px;right:4px;width:22px;height:22px;border-radius:9999px;background:var(--slate-900);color:#ffffff;display:grid;place-items:center}
+.ph.add{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border-style:dashed;color:var(--muted);font-size:11px;font-weight:600;cursor:pointer}
+.ph.add:hover{border-color:var(--brand-400);color:var(--brand-text)}
+.idbox{display:flex;gap:10px;align-items:center;padding:12px;border-radius:var(--r-xl);border:1px solid var(--line);background:var(--surface)}
+.avatar{width:36px;height:36px;border-radius:9999px;background:var(--slate-100);color:var(--slate-600);display:grid;place-items:center;font-weight:700;flex:none}
+.bigcheck{width:64px;height:64px;border-radius:9999px;background:var(--emerald-50);border:1px solid var(--emerald-200);color:var(--emerald-text);display:grid;place-items:center;margin:8px auto 0}
+.code{font-weight:800;font-size:22px;line-height:28px;letter-spacing:.02em}
+.tl{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.tl li{display:grid;grid-template-columns:24px 1fr;gap:10px;position:relative;padding-bottom:14px}
+.tl li::before{content:"";position:absolute;left:11px;top:22px;bottom:0;width:2px;background:var(--line)}
+.tl li:last-child::before{display:none}
+.tl .d{width:24px;height:24px;border-radius:9999px;display:grid;place-items:center;border:2px solid var(--line);background:var(--surface);color:var(--slate-400)}
+.tl li.ok .d{background:var(--emerald-50);border-color:var(--emerald-200);color:var(--emerald-text)}
+.tl li.now .d{background:var(--brand-50);border-color:var(--brand-400);color:var(--brand-text)}
+.tl b{font-weight:700;display:block}
+.stars{display:flex;gap:4px}
+.stars button{color:var(--slate-400);padding:2px}
+.stars button[aria-pressed="true"]{color:var(--brand-500)}
+.stars .fill path{fill:currentColor}
+.ticketcard{display:flex;flex-direction:column;gap:6px;text-align:left;padding:12px;border-radius:var(--r-xl);border:1px solid var(--line);background:var(--surface);width:100%}
+.ticketcard:hover{border-color:var(--brand-300)}
+
+/* Notifications */
+.nlist{display:flex;flex-direction:column;gap:10px;max-height:820px;overflow:auto;padding:2px}
+.nlist>*{flex:none}
+@media (max-width:899px){.nlist{max-height:none;overflow:visible}}
+.notif{border:1px solid var(--line);border-radius:var(--r-xl);background:var(--surface);overflow:hidden}
+.notif.fresh{border-color:var(--brand-300);box-shadow:0 0 0 3px var(--brand-100)}
+.nhead{display:flex;align-items:center;gap:8px;padding:10px 12px;width:100%;text-align:left}
+.nhead .chan{width:28px;height:28px;border-radius:9px;display:grid;place-items:center;flex:none}
+.chan.email{background:var(--sky-50);color:var(--sky-text)}
+.chan.tg{background:var(--violet-50);color:var(--violet-text)}
+.nhead .t{min-width:0;flex:1}
+.nhead .t b{display:block;font-size:12px;line-height:16px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nbody{padding:0 12px 12px}
+.mail{border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden;background:var(--surface)}
+.mail .mh{padding:8px 10px;border-bottom:1px solid var(--line);font-size:11px;line-height:16px;color:var(--muted)}
+.mail .mh b{color:var(--ink);font-weight:600}
+.mail .mb{padding:12px;display:flex;flex-direction:column;gap:10px}
+.mail .brandbar{display:flex;align-items:center;gap:8px;padding-bottom:10px;border-bottom:2px solid var(--brand-500);font-weight:800}
+.kv{display:grid;grid-template-columns:92px 1fr;gap:4px 8px;font-size:12px;line-height:16px}
+.kv dt{color:var(--muted)} .kv dd{margin:0;font-weight:600;min-width:0;overflow-wrap:anywhere}
+.tgwrap{background:var(--slate-100);border-radius:var(--r-lg);padding:10px}
+.bubble{background:var(--surface);border-radius:12px 12px 12px 4px;padding:8px 10px;font-size:12px;line-height:18px;max-width:100%;box-shadow:var(--shadow-card)}
+.bubble .bot{font-weight:700;color:var(--violet-text);font-size:11px}
+.bubble p{white-space:pre-line}
+.tgbtns{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:4px}
+.tgbtns button{background:var(--surface);border-radius:8px;padding:7px 6px;font-size:12px;font-weight:600;color:var(--violet-text);box-shadow:var(--shadow-card)}
+.tgbtns button:hover:not([disabled]){background:var(--violet-50)}
+.tgbtns button[disabled]{color:var(--muted);cursor:default}
+
+/* Admin */
+.adminbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 16px;border-bottom:1px solid var(--line)}
+.adminbar .who{margin-left:auto;display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)}
+.abody{padding:16px;display:flex;flex-direction:column;gap:16px;min-width:0}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.kpi{border:1px solid var(--line);border-radius:var(--r-xl);padding:12px 14px;display:flex;flex-direction:column;gap:2px}
+.kpi .v{font-size:24px;line-height:32px;font-weight:800;font-variant-numeric:tabular-nums}
+.kpi .l{font-size:12px;line-height:16px;color:var(--muted);font-weight:600}
+.kpi.alert{border-color:var(--amber-200);background:var(--amber-50)}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+@media (max-width:1100px){.two{grid-template-columns:minmax(0,1fr)}}
+.panel{border:1px solid var(--line);border-radius:var(--r-xl);padding:14px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.panel h3{font-size:14px;line-height:20px;font-weight:700}
+.bars{display:flex;flex-direction:column;gap:8px}
+.bar{display:grid;grid-template-columns:112px minmax(0,1fr) 28px;gap:8px;align-items:center;font-size:12px;line-height:16px}
+.bar .track{height:10px;border-radius:9999px;background:var(--slate-100);overflow:hidden}
+.bar .fillb{height:100%;border-radius:9999px;background:var(--brand-500)}
+.bar .fillb.hk{background:var(--sky-text)} .bar .fillb.it{background:var(--violet-text)}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:11px;color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px;vertical-align:-1px}
+.sflow{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.sflow .ic{color:var(--slate-400)}
+.kanban{display:flex;gap:10px;overflow-x:auto;padding-bottom:6px;min-width:0}
+.kcol{flex:0 0 212px;background:var(--slate-50);border:1px solid var(--line);border-radius:var(--r-xl);padding:8px;display:flex;flex-direction:column;gap:8px}
+.kcol>header{display:flex;align-items:center;justify-content:space-between;padding:2px 4px}
+.kcard{display:flex;flex-direction:column;gap:6px;text-align:left;width:100%;padding:10px;border-radius:10px;background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow-card)}
+.kcard:hover{border-color:var(--brand-300)}
+.kcard.demo{border-color:var(--brand-500);box-shadow:0 0 0 3px var(--brand-100)}
+.kcard .c{font-size:11px;font-weight:700;color:var(--muted)}
+.kcard b{font-size:13px;line-height:18px;font-weight:700}
+.kempty{font-size:12px;color:var(--slate-400);text-align:center;padding:10px 0}
+.dhead{display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap}
+.dhead h2{font-size:20px;line-height:28px;font-weight:800}
+.dgrid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:16px}
+@media (max-width:1100px){.dgrid{grid-template-columns:minmax(0,1fr)}}
+.facts{display:grid;grid-template-columns:110px 1fr;gap:6px 10px;font-size:13px;line-height:18px}
+.facts dt{color:var(--muted)} .facts dd{margin:0;font-weight:600;min-width:0;overflow-wrap:anywhere}
+.actions{border:1px solid var(--brand-200);background:var(--brand-50);border-radius:var(--r-xl);padding:14px;display:flex;flex-direction:column;gap:12px}
+.actions h3{font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px}
+.audit{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px;font-size:12px;line-height:16px}
+.audit li{display:grid;grid-template-columns:86px 1fr;gap:8px}
+.audit time{color:var(--muted);font-variant-numeric:tabular-nums}
+.radio{display:flex;gap:6px}
+.radio button{flex:1;padding:8px;border-radius:10px;border:1px solid var(--line);background:var(--surface);font-weight:600;font-size:13px}
+.radio button[aria-pressed="true"]{border-color:var(--brand-500);color:var(--brand-text);background:var(--surface)}
+.stickers{display:grid;grid-template-columns:repeat(auto-fill,minmax(176px,1fr));gap:12px}
+.sticker{background:var(--paper);color:var(--paper-ink);border:1px solid var(--line);border-radius:var(--r-xl);padding:14px 12px;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;cursor:pointer}
+.sticker:hover{border-color:var(--brand-400)}
+.sticker .top{display:flex;align-items:center;gap:6px;font-weight:800;font-size:12px}
+.sticker .bot{border-top:2px solid #f97316;padding-top:6px;width:100%}
+.sticker .bot b{display:block;font-size:13px;line-height:18px}
+.sticker .bot span{font-size:10px;color:#475569}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r-xl)}
+table{border-collapse:collapse;width:100%;font-size:13px;line-height:18px}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font-size:12px;color:var(--muted);font-weight:600;background:var(--slate-50)}
+tr:last-child td{border-bottom:0}
+.empty{display:flex;flex-direction:column;align-items:center;gap:8px;padding:28px 12px;text-align:center;color:var(--muted)}
+.empty .ei{width:44px;height:44px;border-radius:9999px;background:var(--slate-100);display:grid;place-items:center;color:var(--slate-600)}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom, 0px));z-index:50;background:var(--slate-900);color:#ffffff;padding:10px 16px;border-radius:var(--r-xl);font-weight:600;display:flex;gap:8px;align-items:center;box-shadow:var(--shadow-pop);max-width:calc(100vw - 32px)}
+.toast .ic{color:#6ee7b7}
+.note{font-size:12px;line-height:16px;color:var(--muted);display:flex;gap:6px;align-items:flex-start}
+</style>
+
+<div id="root"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/htm@3.1.1/dist/htm.umd.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script>
+const LOGO = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAD5jSURBVHhe7X0HdFTXtbacOI5Nkaapg4TaaHrvVR3RjMpI04savYhiwBSBbXoH97T3x2kvfs8tznNC3BI7wR3TO0iiN0l0MBjvf+1zZ6TRlQQCBDGxvrW+dWduOzP37HvOPnvvs09ERC960Yte9KIXvehFL3rxH4OXXnr4T6OGD9ziL9QeDGQ9vt9vqtnlVs4+4JUvr3fJXjzoVP6q3qn8db1T8esGp/xXB1yKF/f61Mt2OtVz93q0Y/ZU5BRtCmTr/zyuJIlXV/cT+u178X3CXHjo7dF56V/5TfZdAfXS/T7pWwc9kh2NXun5Fq8UrnvkcMOnhO8CCoCAHCAgo+hHSimSfUoAnxq+86nINefcUjjiFV446OHvPORR/qnep122qdrqwLIiAOi/ohf3E6/VuuM2V+aW1Pu16w/7VJuOeMRXrvglAFViAD8XwJUBV12ZcNnFg0sOAZxzCaHFJYRzTqQAzjn5rTzv5MNFBx8uOKjPyAu4z8WHay4+fOfOBKjIAKgUwJUKCZxwS64c9iu/OuDXrPmqMnvELyeWcui/rxf3AK9MGxO9uyrHfcBneuOIT3PmKnl7eQAeHqlorLhzThGcc/LgnDMTWlxIHpx18uGsUwBnXaFKF8D5MOL3s62CEaIQWsh+6nz83uxCQeLDFRcPwJsB4OfDJZ8MjnjVJw75dP+7o8rkfmGaJ5r+u3txl/hs/HDdgUr1i4cDkuPXAlIAnxiuuzPhkjOjtUJJBYfo4rdj6Jw7Ybv7tlJIhO2SA38DDy57xAAVSAEc80mP7w/onv+kwqSh/49e3A4+gB/vHpVjq6+Uvneygg9QlQbfeLnkDT/vwLcVKxff7o6V1pMMbyXaKISz5HdQ3QbuO+sSw3mHCK55eABVKXDGy4ODFap3vhid9XgEwEP0v9eLrvAB/HhzdYH3sF/xxTcBIYCPB5ed6XDGnQHNbhG0BN/qFhc+dAFccGDT375Jp4hvKUV6pXaXeJ8LDor0Y2QfCqJDRLaU/oACyoUWN4/qJrCLCIjgcIX+063Vha5eQbgFPq3OffywX/HZtQohUeQuubhw1hHsv508OO8QUG8d6eM79uU9LQCh+9P3td8fVCwdotYuou08HlxypgH4M+FypQQaK+QbP6m0jKD/7x88NowdpthbZXj7fIUQbgRS4KIzHc6jUkfecqzsjhXwYBB/OxfOudLhnDsVIJAG5/wiOFihe33j+FwR/Tn84DB//suP7RprWnK8QngV/EL4xsENau2oyYcP1+gP9kEh/nYUAvxPYtKKXXFwASqkcKpCdnFPQLvAV1f3U/pz+UFg48Q8S0OVfBNUSeCKB/tObOopxQ77d2oIRn+gDxKDgkt0BBGxM6AgXCQ6SyZc82YCVAmgMSD79L2qHDX9+fznAiBiy2jD7BaP6Dr4BNDiziBvRpObGrOjhk+Gbx0e6IPGNvsBjlxw6NgS3rJ5MuGCSwjf+cRw0iu6uDOgHE9/VP9x+P2T9pgGb/b/QUAN15xcaMZmsVXJoz/A/2xS9glKefzGzYfrlTI4GND97tWamkj6c/uPwD+rh0qP+uW70P5+2Y4PIJM08xfw8w9QANrRIYDLTko3OFah+fJPowoy6c/vgcbmQM7wEz5lM3jRlJpG2d8dAmh28eG0G40qPzwBuECMWTyi86BNAZ8HdhM3KvlwMqA4sc2enU9/jg8kNldbR5/0q779zoOVjn18W99IjCedGFl+CKTsCJRRi9gtHJRl8ZwDfRsCaPLJr35RZfbRn+cDhW1+y+zLFVK45BOQvv6HWtl3wis+LpwNyGG7t2AC/bk+ENhclTXvWqUMLnm5ZNiDzR1604hHrZM/3Mv2vGgXwDduLlwKyGB7IHcK/fl+r7ElYJ5ztVIKlzw8Yienmv0fprZ/xyR+BjFc8qXD+QoxbHbpJ9Kf8/cSX1ZaJl32i+Gym0v+BHHaBMe/VF/XyZ/tZQcSE7hDQp7XZU8aXPRJ4dNqcyX9eX+v8JXXUnzar4QL5M3PJG9+x0CLXnaLpAWg3N4Y3HLNw4Umr+LbTz05I+nP/XuBD2qGao75FRdueKi+vom8+V1703p5K4a/OGge58N3Hi6c9MkvvjNmhJb+/P+teK12cFyjV1kPHjE0uzKDfT02+ygAt3bmhHSDHzLpz6Q9hXDWgQEnmQA+LjS6DA2v1bjj6PXw7wHAQ/u8uvcgIIUWF5fY9HFsi4YOqgto77cP/aGQ86cFic4fOp1Bku9UQGc7Ett6J/u7y9D1t3OP2z2/HTv5j+3+L2UQa+9DCG4dIrjgwGAY1KMy4EalBPZ4de9jNDS9Ou47PqsyzscfRIZ66Pnq4o0PRdeQcC7iIaMkv8ktgDNB4udWBrsR6ji/HZtopB+nk34e/fpb3YN+7q3O74yh/xX6r+Gk/i8VdIqOMfK8yLMM6gDkZUIGlWgXH76tksPmgKmOXh/3FZ+Nyje3+KXfXvZkkB98qVzcQQBCFq/QfuLydfCgxcGHJicPzrgy4ZQjSDuXooPXnnY81gnJNeHXd3K8s/306+8Lg/+N/D8kls+F085MOOPiQxMJc6NiB6iYRyrCiIolEEALjqhIGBo1nL7k4UOzV/Ht5xXDLfR6uS+ora19tMEv3UrMli4JnHVKKLNmq6k3KADEAkj9MfyDGKrd7MygKh8fgD0VzpSlw2lbOpzGbVk6nLFxg8yA04SZFEu5NOI+6tgZck5wf+j8Lq/7NxD/ny2t9X+eKefCSUI+nHJQPOPiQTPpQrlw3sOHix4q/A0VwFCrGNIXsKUArwjqvZpdv6io6Eevn3uObX7TIozJP+/KCFr3UPvnw0U7pfy1kgRVUv39GRLqlQotbik0enSw36OBfU4t7HVqYY9TDXscISoJ9+LWqYA9TtyGPsuDWwXsxa2D+tx2HK9TtHIffg9n2DG8PrQN3ZPcN/x4iKH7Bbfh57f/jVQ54d8pqmAvoRr2OlTQ4JDCsTIuHLWlwJGyTDhmF8BJB+pQqXDVJ4RjbsnVk25x82WvAL7xCeCUW0S6EhQAbFVRHzjnTgMICGFzhWU9vX7uKT4aWyg+45Vd/cad2s7CR9dmQ0rNWeLo4EGTJxP+5h4B8wv9UG62Xy3OKTlYYnHsKtWX7ykx2vaVGsr2Fxvs+4sNtgPFhlLkwWJDyQHqu+1gsaG0vthYWl9ksLWS2l8S4oFiQ/GBYmPpgSKjrb7IZGsoMtgaio22xqIQDbaGImNZPTluKG0IsnGkobRhpNFWP9Jkqy822g6Gk5xLnY/XExYj9cjShuJ2v8V2sIT67fuRJcaSfYSm0r2lRtueMqNtd6nRfsyZ7Ye1w0vgqzIpHClJggOl2NIJ4JQj4/pOr3HhJ86sko+cVvueCl3RKad4x2W/CM54qGgp7G4xGrrZxYNvXCmAzrYPakrv3zyEg27VBox0bXLzWkO36AJA+i3SZOEQhgvNXgG8WFwOQsXkcz/i1z4ZkTyZFxH7Sp+IiHWPRERgXNzKRyMi5j9GcVqfjhzXt3PSz5vWJyJ2Wp8Ixri+EVFP9COMnNCfMGJCf/KdUdeXMPx4xBP9KNZ1UkaIwfu03i90DTbB4b8l9D+QtY9SxP+H//PVn0Tw5zMjBDOzWbJpfxqRPRr+XJQF+4sGwrEyOXxlU095bVZAtdFfuPJftqxl748dOu1D7xBls1vadMEbnOziFJLQMmJvwWlrPhHsdRo+vi/zFb+qshSf90tJ84OSSH/rQ0M9FIxm1HKxqfJkwh9sQyFWOetMhGTW/ZPUBwA/ksxYZbVMhL8Wa2HzyEFXPvZkS3Z5La//vWrYkF97nZava7J+9klV4ZBDdsX/u1GBw0lqtIVzIrB1xYAajKC+UCWHLwLZTvr9exR1dXU/OeQVbfvWK4KmTpp8ugCg4nLWmQG7vBrItk6ECMECB/2evYiI+Kls+ntTC9zw3vCUC3/36mV7/Kb3NtQOMfxmcql1m9f86rZAbnmDW7Xqu0oxtLgziU2A0q0wmEQITU4J3PBnwmGXZNe6ddii3iNsqs6q/LZKDBcdqMljE982vGsVgOBYtZkofRgBmwFvlA8Bjnrq1/T79SIIxRNZRnPljb+MkMLrRTLHJ2P89q+q8l7fEjDu/D/PyJJXpnjSGn2KLVd9VIsbsgm0PXc+XHClw7VqHnxdkVtDv32PoM5n/ul+r3znDb8ILrj5cI707x2NPu0EACXUnQo/L7IDSzJrDf2e9wPmAeafxqpqVDHKmlHR2kmrY8xPvMrSzHw3WjXr/VjdzL/EGKb/Olox+alU7YTiOOPwgfTr7wu4y/pJDVVH/3ukBt7N5x3+daHR+C9ffuku35DAbyoruTsrVC9crkADEJcMEdHM3t7JhvWQAeDlQ6NbvtNWZ+v5hBbbakyeK1UiOI9vtZtP+h36299RADLhvIsLzxfboa94whz6Pe8lUrRV4ljtlOUsw+zdTOMCYJuXAce0GtjWdcC2rgW2ZR1wLOuBZV4HbNN6iDEtB6Zxxjm2vvadROUUL1evv49ja4jQayZsfnGYHt4vTIANBenX3iuUvfNRseIPe8pkhy755XARTebudCIAZAo8MRaFnjsVW3jJIYSrATF85dHb6SXcHebOfWivT/X59YCIGCpQEaGifLDw9u7ecAE4bce5fWnwQnEx9JFUzaXf9l4gWeDlxahm/SpGt+gqVnCUdSVEmpYAQ78U2KbVwLKsBVbWekJm1lqIsuDxFcA0LAeWaRmwrSsh2rIS2Np5e2MUY2vmRkTcB3s7RKh0lV//PF8Lb+XGw4dDkmFbsRAOlInhiD0TTqDV0COCZg+2ANjvh2ZItwkAMbg5M+E7vxgOOlUb8Z49ho+rrNazFXy4jIpf0OjT2dsfzmYnD07beXDOngEvFJdAH8noefT79jTiNWOfiNfNvxBteRZYplXANCyDKONyYJC3fTUwDXXXonRz97F0Cz5iaOe+y9TN+ZyhqzvJMi4DdtZaYFgXAcO8CJimFcAyrQe2dQVE6yf9I54/Ukovq0dh/uDHcl3VtpfzlPCnvIHw7pA0+HQEDzYXi2BnmQD22zPhkIsHJ91oLm6baNJu6B20tWBWk2afEDZWZRnoxdwxdgc0v0GL0zkn2vops273BYB7zwWAz9cy4zSz3orKWgFR5uWk4vubl0CkdTnEWtZArG7Bvnhl7cxEXrFwwICIdnPxYlMHc9jiCYUszYw/MPXzbzCsz0GUeSkwLXUQZV4ELOsa4GgWnE9Q1XjCr+tR2Lb/RKGt3vlyvgreyh0IfytMhU9GcOHrYj7sLOXD/nI+NNoFcLhcAKecYmh2U97FUOVfCAoA5UwSAfj4sM+t+xW9mDvC21N8CUd9krPXPOjVCjl7uicAqARiC/B8cQn0lY25J56rDOVwdrT+iY1x1ueAbVwEDNNTEGV6BqLMayHauBQSVbUrBw3K7dZsG45gnJGlmrs5xrIeOEbUCRYBw7gEGOY1EKdbAgPlo+5NcKbvg58q9FV7XspXwhs5SfDXwkGwcUQabCriwU6bEA6Ui6DRLoFDDikcdkjguAPnU6DfgBpuEyEI5jE47xTDN+4MOOKUnHltTA+kq9nht47+zicjLsizbvTzY4HdF4CzKAAl90YAzOYBP43RzvgwGvt082JgGhcDw7QQGOYVwNHUXU+QjKugX3Mr9B8kj4xTTHk7Omsl9DUvAaZ+KTBMiyDKtArYhkUQp6waRb/mrlG78VG5vmrfi/lKeD0nGf5amAIbH0+Fr4oyYWepCA6USaHRLiX+g3qHHA7ZRXDUkQknXTinkrK4ttVHJjG53whIYXuFKUAv6rZx0KN691uvvLWQ7oZ4EQGw8+GsPQ2eI0pgz3cBCdpRL7Ktq4BpWgZM7LuNS6G/eRmwDcshTlh5x002jxfxE5Z26vuR2WuBYVwFDPMSiDIthH6WNcAyzLmWKrfp6NfcFWreekyhr97/cr4C3sxNpASAtACZwRZADA3lUmh0yKDRIYdGuwwa7WI47BDAUacQTgUDTsh0Ozea6DMBAhKodxv/RC/qtvD+NFfSUa/i8hVif27zRNEruzO2E4CiYugjqulRAUhVjxscq8c3cwnR8iPNT0OUaRFEW1dAnHriXXvHBkh8CRz9M8cZ1lUQaV4BTONCiDIuJqOGeM2ELRMnDu45i1tQAF7KQwFI6FIADuHbHxIAhxQanSJodAjhiAOdSNScixa0vgbT2x13qVpeu5usZV/UmH3XKsVw2YHGh9sTgJagAJxzpMNzxaU9KgA1cvnDHPX0rxmm5yDSRFU8CkCkdQXEqqfWc7k9M4aPk0zxckwoAEuAaXgGmIaFEGlYCtGWZZCsr+m5OP1pG/ooDdUHKQFIhA2dCAD11ocRWwOXBBpdYjjkEMERhxBOOEVwxoWJKETEboBu5M0BYzG9uG5jj1/zClTguBPdkFR4UneCPNsEAMPD0+H5YluPdgHJumllTDMO8RYBA4d62O8bF0OkZRVwFNXj6OeHoNUmPJqUlMRI6idicKO4/bozxmcpZn/Fsq4GBrYApiXARkGwrAW2YdYBuTzuMfr5d4Rxr/ZV6G8tAIfsoeYfiS2ABBqcqBxK4BDpEkRw3CGCM06012DaugzY7xL9jF5ct7Bu4rpH6r3qfdd8GJJ0+3l6MNgTLYFoCHq+pBT6isb2mABEa578c6RlHUSZnqI0dROO31cAUzf7dJJoGCN0nkhTlMhSjQ3E6GY+F2ea8QFLP3U/Qzv9KFM96yhH90QjxzBlc7TmideilTOeyFRM6TRnT6xi4jiscDIaMC0Gpmkh0TmirUsg1TLqzt+ucIz7sK/CUF3/Up6cdAEbcBQwPD0oAHzYXyaBhnJaC9AppURBPGIXwlGXGK55hdDgFu6U19Q8TC/ylnh7zDDhSafw+hVnxh0lamovACU9JgAD5e44lm7OuUjLamCYnwGm8SlgGBYDI+d5iFZP/jmeE8cfmhSnql3P0dQ1MU1rgG19FpjYl1uWQ6R5FbEAMrPXApOMHtYC2/wsxOoXXEvUTv3vWIlHGF7eAKE9NUq74DIDDUooaISLIca6HhLVT/4i/Nw7xrgP+yqN1fUv5YcLQMbtC4BDBoewVXCI4GDQGnvEJb72z8rHufQib4nPAkYfmn4vYJz/HQhAyBTcYk+lRgE9JACp2mmFbNNS6G9ZRt5GhnEBRGUvh2h13UYrw9Y3UTapMkY7+zQLjUKWZcDWrwSOfjWwTWuAY10LTPNiiNLVXWRon27ur336YqRhGTCz1gDDuhgYWc8CW1d3Pl7hcYXKQ4MqSzVzE9O8qrXycaiJ3+M0dVuKiyN+1P4X3gE6bQFCAiCAAzgCKA9v/m9CMlSUwEGnGBpxiOiTwJdOc+v/6Tb2ehTrvqvkQrObB+d6RAB6xg4QL584gWNaAZHmhaQyIrNWAlP35FfyiIiH2dppc2JMqyDavIzqs81PQz/TEojKWgssw7wrMfrpP49Ujyl4JGPEIGbG0IRHBtoGsUW1Q2PV016J0c39hmFeB5FZz0G0Zta3AzNGDAqVyVFPf5WFLU6oBTAuhSjLUojWT2+R6GwJ7X/hHWDcq32JEthpC3CbAkB0BUoQDjtlcC4ghs1O7Wp6kbdEg0f2/ncVacTteyujT2e8VwIQJxu7hGNeCVGGZUTrZ+ufbk4RDo+JU06oZVmXQqQFx+xLgKVfBgzDUmBZ1kCMesbXbFGZgn6vcAyQOtUszfStnKznIFb95Nn4tKLE0DG2duZ6JiqCYV0Aw7wUWIbZNxKUXln7O90ByCighiiBb7UqgUEdoBSdQhJo7E4XEC4EDgk0OpVw1ieF7U7t3+hF3hTjxo3re9Ajb7zu58J5ov13rOBbkbiD7Ri+ROkAfSQ90wXEKsatZJP+Hx04yyFGMd2ZLPMVxhsXQZRxLUQFlTXUC7B/j1XP2BwXN5xNv09nEBmdjETFhOoUdaUyfH+0esYaZlaoC0AuJJ5DpmE+RCvcdz9Pb9qGPqFRQEcBQEsgCgBaAztWdFc8ZJdCvVMBZ9xS2OLUNmCd0ovtEu+PGcw94pJ8cykY+EGv3O4wpAT2tABwFJMXMy2oyC2FaO2cjSkKxUCObtopjnUNMIxU08/Uo11gGURr511OFDnE9HvcLjjqac+iEtkmAJTHkK2beyNe5bp7TyERgJoDLwUtgXQBoJTA2xMAQqcMTjhlsMupvvbhqOHdTzy12aPJvuASwXmXiPgA6JXbHRIBaNcC9EwXkKiZPpmVtRaiTSthoHz8iHjt1FWs7FXEGkiUQgOOChYC9tmxyjEv06+/EzDVM15Hi2Co8tHwxDIvB45uVstAw+Px9PNvG+57IQByqMcVT1xyOOJVwZcBcza92C5x0JftveGTd5KuFb93r0u4VzrAQOWkPKZ5DbDUzxzkqh1Kjm7+OTTVYqVQCtoiYBmWABuHatrRVvr1twvU8jnauq3MoDmYtDDGRcBE/UM3Z5vZbP4x/ZrbBgqAruZAO0NQqxKIhiBUAukVfGsedFJDw1M+JXxeYXXTi+0Se12GJ3ANnbaon9Ao4N8vALGS4miG9plvo7RzX0jSTahkW1ZCFLHTB4lvJ0b4aJ4885ik+M7t4EHES4oyWOqnrmCTzzQ+AwzD08AwLAJG9grgGGp/ST//jtBZC3AXowAk6gANTjkcdsig2aeGf/nM0+jFdol9HuUyCIjhAsl/H/L/374AYBdwtocFABGtmPJ3tmJcNUM+71cY7RNlfLpVAEj/bFkFbM3Mep7V2n3FpwvESSfURuvXAUO/jHrzieFpObBNKyBR7++ZbB33QACQDeg4csigxa+BLzy6xfRiu8RBn+wX6E7E2SdU5O/tCwBdCezbQzoAIlVUMiRNWKBnqeu+Qvs/iQEIV9AsK4GpmX08QWtj0q+9HZgjIn7Mkc/axjKsAYZhCYk3IEJgXg0c9ax92oSER+nX3BHuiQBg5WMMgQTO+tSw1ansvj7U4JL+DvwS8vZTXkBKB2if5OHmbMbZru0EYFyPCQCiqmoKM9Y053h/61LS74cLQJQZh2h11xM0Hgn9uttBorq6mmFaDlGGJaQMJnoejUuAaV0GcdrAWPr5d4zOBCDMDtBtU3AnRAE459XAdof6/9GL7RINTun/ogBQufvbYs9uSwDuYReAqC2tfTTaOO94JBmfP9NBAKIsqyFGMe6OI5FTlSMHxOpmnmJYlpNKZxkWQn90O1vXQYx6ypcYNEK/5o4RGga28wbe3SigAf0C+JkIgBq2OvR/pBfbJRrc0jfAL6bW57kLAbgXSmA4YhS1SzhZ6ygvnSHYPBNNfRH0RyePfvZxqXTwba/pN1we8ViMesrHDIwAMj4DkSZsZZ6BvjgU1Ndd5sod7QxFd40wAejMEHS3AnDWq4JtLsPr9GK7RIMHBQBbgPahx983AZDLIx6O0Uz5P3bWemL2xfE/aupoDyDDwuy1EKub/D/0624GpdLCjtVM+1urudm0mMQd9MtaAUzTPIiWurs/nOouwiyB96IFQAHY7tb/L73YLnHII3+VEoC2ad+hyv8+CQCin8QSxVHP/jDauh6icHYPuoZJK/AU9DOuAKZlBbA0E36Zok7pT7+WjgHq6oIY3fQdUTihxLACWPpnIBKbfxIQ+jREyWp6rt8Px00F4C50APQHOORUC2DX/je92C5x2Kn4La6ni11AKLcvFXLcsaK7Yms8AAkK7dlRAB3cKH2/WPW012OsK8kIgGVcDiwSzfsM6bcxji9a8+SORM2EyoGy9pa7WKmRk6ifMDRWNeO1GBzfmzH44xlgGJ+GSNNy4FjWQoxu3jm2xFsefl2PojMBuOtRAAoARhKhQ0gBW2zKV+jFdonDHtXPcGGHnhIAnBfQU76AmyFBUV3HMsy/zsheB1EW1AOeIhWJChzbsgLYlqXA1s9pjtLN/CRSN/Ndhv7JfzENc06yjAuBY1kDDMtKStFDm4JlNbDMKyBOM/XjBInj7j1+NwMKAHoDe3wYKCGfz/pksNmlepFebJc4gIagMAHAir8jASCjgFBUcM/FBN4M0dIqA0s792/YArDMzwGZ9qVfBCz0FppRk18CDMsqYGWtI/4C0loYlpLZRGzzKjITiG1dBjG62XtiVWPGoS2AXkaP4x60ABg/iENAFIRzPhV85TUsohfbJfa4FLOwC8AA0FALQCZ9dlLRXRFnrBAdoDykA9wfAQghQVZTGKN68o9s7bxTTNMzJCSMZX0BWJZ1wLZQYWIMCxIFYT2wjasgVjfvfKx+2oZo7agAj8G4aytitxGyA3SmAxABuIN4ANxi6LhdAU0+NXzmNHR/VtP+gNr3rU9KJoJS8806VvCtiAKALUCbEnh/BSAEDBaJklQNZyrHLeBop/+ao5z2l3jF1A/iVDPfZytnvBOrmfHbRN0Tz8QqJ9iSpfZk+vX3BZ0KQCgqWAD7y4ITQzqp6K6JkcKUOfikTwWbApbup4/ZWmPKPe+Vwzk3NfWIXrndYWsX0BoUem+UwEE6ryXBMHb0QO3o6mSZK4l+/IHAPRGA4FDQKYXDHi184s/tvmf009GF/JNOxfVL7sy7aAFoUcH3aBQQp536Njv7WcC5fHHyO58O9m9FZ+7gHhAA5FGXBHbZVdf+6ryNlcherqmJPOKWHbns5d7xEi/3SwBitHNeZZPQ7uUQpxz9YCahIi3AKJovIFwAbt8OgM3/YbuCJJbYblfVr3C7+9CLvSkaPfIPbwRwJhCmhaEq9ftoCIpWP/kHlnklRJsXQpyy+gEWgK4CQu5sFECigu1yaArwYbNH9Vd6kbfEfrd6/XeVbdm/b3cUcDsCUFxc/KORI31RIdpsVUyncyzDllsTOWLEiH44DZx+TQjRmhl/wPE6x7wYYuSjWo01EwdPfKSgwMbMtdkiQ/fNzbVFWq3WvmbzzYd2NTXyhwsLC/sj9SNG4DzD1ilk1G8dGeV253f6RsHciIdEovw+tttxFt0DAcAhIPK8XwybXJqV9CJvia+dpsA14hCiooKovADdZ+swMCgAjwpHz6eXEUKa0iGL1085yrLMPMoyzTrKMs05zjLNPcY0zjvCMjzVyNYu2Bern7shXjm2QwBGjA4FYDlEm5ZBrGJcWWh/kqJiXoJp/nG2cd5hlnHOEaZh7lGGcd5hhn5eI1NTtyNGM/0PiWr/4PZ3oxCnGL14oGHx4Tj9nEOxupmNyWqXOXSMb6k2xVrnHOVoxm9OSOC3xhskKaqz45W1r0RrF2yJ1i2qj9Y9tYepm/HXWEXtuIQE7c3jBtyvdHQH36UAoBEIQ8ObPErYWG64/Ykhn3oKJGecwm/PedElTM9Ld2t2CAoVj+1SAOJFTl00GmhyMIPXKmBhQAfSugrQ0YMJnfrnrIFY43JIVkwqCr82RjOTtAA4GSRWNtYW2s+WjVnFzH4OmGbM9bMaWNkrgZW9Dtg5zwMn5zlgZr8MMcbFkKCuWRh+PwRTNfk30dm/IEahGPNqSNdXtgqAOGvc49EFL0OkZh7ExWWQcPMBmurFHNMCYGW/AMzcl4GVswZY2WsgKhftDushRjvp81RlwYB2hYSjVQmUt3kD71YA7FI4ghHBLsW1v3nzePQib4l1Eyc+csQt3XfdQ0UAEadQF6nhOiM9IuhmAiCRjIxKlI31chQT/AmKMb44+ThPvGyMM1Y51hYrHx+I1T7xd4Z1KUSbXoSB6tlbzfPbmnCOZtbvWeZVEG1aCtGy0aWh/Uz5hEUcywpAfz5DM/1/WfLAeLZs0iSWfMqcGO3kV5mGp0hYV7RlCSSqxrdLq8ZS1v4ixvICCf1mmpZCjHbKL+LV46ek6wM2gTIwgKUYPSlKWO3FcwcqxvtisZysNcAxzYdY/dQXGKpR5f3V1aOjtU9uxClk7NwVkKCd+o8uA0hJFzA66A6ODyqBQQG4Q29gPcYCuqSw1avcVfPSHUwORTR6tb8Dv4hkBm0LC+sew0cBRAe4iQDcClaetS9HO+8kx7wW4rRzrmWaijJCx1AA8CFzaALAkI9fjALANK8Ejmx8hyVYYxVjxhG3MZkJNOcL7NtDx6KVk34Ra1oLLP1q6GfBlmk9MPJ+BTG66XvC7yGXyx+O1k7bGWl9iaSoiVd72uUMGJwU8Uiceu5HLMtzEGtaBjGK6mHhx1tBBGDMwZfylJQADMEcQXfrDpbAJa8cdrhM3Y8EomOL3+q/HpAGg0O7//YjOyiB3RwGpqYaOUzJ0IQBkqEJ8aKiRGZGTgJ67FjaJzehwyZa+zQky72tKVpY6lm/Z+BbZkYBaOsCGIoJSzjWlcA2rYQY+cQOy6/iXMJI3ZMNUWga1i24OkBYlBo6FqOo/XmMeSWJLsasY5G62QcZ2jlbY1Xj/iv8HvEqv5Sln3eDaV4LLM2MreHHQoiVTxvOwSDSrJXA0dR2HpdHDQODvoB4+Ovg9i3Anc0MkkCLWwmfu7Lv3Dby4eiRyUddsssX3aEctZj7t3tC0EEAbjIKQAwwTq5gG+d9yjDMPcPQz7vE0s+5TKitu8QwLLgYaVz2LcewAji6eZCg8uhD13HUs3+HQZooABzp6FYlMCQAOJE0Xjau02weMea5H7NN64CF08iE7lZLWbSi9udM60qIsi6EWP1yGCStJCt501MvDlTVDifTxnGmknZSp28ax+BLZejnXmVnPQsszZOdz9EjAlB14KV8WVAA0mDjcO5tCkBY6hi7DI47ZbjoxoXXqgtb5zjeEeo9mnevV2ASQmRID+hY4XSGxwQ+X1x806DQBG2NnWNcDP2yXgBG1nMkFQtDPx8YhvnA0D8FTG0d9DcuBpYBM3rOby8Amtm/RzsA07wU2PKxrcPASNnYJexsbAGWQ7ykcwFgG+f8g5G1Eli6ZcDiV+S27lfWvsywrgGmeSHE6BfBAPGoViUwHPHi8SOijNj/rwCmtpbkJqAj2WpPZmqeuszJegGY6hnv048TkBxBKAByeCsHlcC0MGcQBoQEM4S0JojqjEqybXCK4ZBdAWe9Utji1v6FXtRtY0eFdgxUpsE5h5QIAJUhvGOF09kmALeOCmZrpn0cZXmeZPlgaSb9jCP0SFgifyZL4OYzeA5B/0GDuVGGWZ9GWddClGEBxMudbV2AZvYfsJ9noq8/zA7A1tYu4mStIIpejGR8hy4A08P01c/eH5W1BpiGORApLpeHjrFUk19AAcDIIo5+ESRIO59hlChzq5j6OuiftRpY6pn/oB9HxChHWzn6xTcwlV2MdmrnUTmhJFH5ijYBGJ5G0sTtIgKAeQJvJQCYRYxy/x4pl8FZvwA+86ur6UXdNt4enZPQ7OKfu+DDvDO4AFT35gWQsPCwYWBXAjA4IuIRtnpWfWTWaog21MEgUWWn2SxY+ukfRlrXAkPfXgA42jmv4lQxpmVJOwEYaJn1NAenb5mXA1sypkO+wHhFjZNhXnCDY14DbPXs48kSSVToGEc5+TkmlmXEnEBLIEE+Kqf91RREIlGfGPX0+ijremDpF19PlHe0K7C0M/4UmfU8sLJWQ4x2fOep3MME4E0iAKlEAFpbgFCOoJsJAAn/oty/J1xS2O2UN//Zb42lF3VHOODX/zcmi8JFobq7FnAHHaCLUQC+iSzVzM19cpeTZnygYvwKqXEwx2IZGSUyGhny3NxIJEMz90smydNXBwMVblPoeo5u7v+gDsCyLAa2rM0UnGia8XS0BbN9LgWWYuqKRG2NJkU7zsgW1xTGyScvZutnX+qftRRiMXmEuva51h9EdIDJL5C8QCYqWCROWkN0gM6QIJswlWVZBn2zngO2du7peEFldXymm5usqNEkqCb/Fls1Rs5LEK2dVZ8sGdkqZO3QmQCEdQGdZgnrwKCO4JBCU0AJm52mnkkVi/i8wpp7HoeDrcmib812AlBUBI92IQCIJNXYeZjGvW/WOmAalwBHv6CJbZh3gmWYc4Ktn3eMrao7FqVb9G2UeR2wjAtgQJhljqV78g0yBresgGjpqNaI3WTTrKcx8zfJE0DmDGKCpyXEYsgxYxbxNcDOegFilTN30eMEo1S1Pyd5hdDEbFwGCbKKwvDjNPwoVjX2dyzrCmBlvQQcnDWkXXidZVwCkdnPAjML8w/NOz1IUd0qtB2AAqALCgA9IKSbw8BD5QqyPeyUQoNXCe8Fcrou77ZR/McfHXYqNmEq8jtqAYgAdG0KtvF4Pxmgmrg2Wl/XxNLjvDtU3pYC27wYOKZlVICnDmP7lkC0tg6iheWtmbATtE+8wbFixS5sJwADjTMWYLbvKD1mC1kMHMNiYOO0cf1CYBoW3OAY5xwZoJ75UlLSkA7NZLRq/M8xZTzHvAiiTU9DrMI/lH4OHfGSCRPZmjlbGMb51zEOEXMUsI1zTsVqJ//XIJGt026tFaUbH5XrqvfdjQDUOxRk7N/ikcI2p+HLHl9Wdq/XWPGtD5NFd6zszngnhiC5vDguQezXxslHmQfIK81JipqsgepROVGqsRaGvNLMUdVYOKqx+gRtaattPZHvSYuRuq0JqppCvqyyNSBkoGnaU2zUzo0rIUpWu4yd5lLESio0bGGNKlFbJbaM7KI5Ji2SKyVGUZPFUo62Jiqqs5OMztbUczcDOpkGatx8jsRrjBNWKiW6bs5OxmTR2uq9XQlA94aBMjjskMIZrwq+KM8mVsoexcvzax6r98j3f+ulWoBbeQZvxxSM4PF43fKeKc3mARlKS4eUL6IMrThDmN/aMiRZnliEKWTYaNCRja5sf3ZEhEYzQiuTDUuH21hqDaCH36oQBv/fIwpdze5QruA7EgCHBE555LDVqd5X5/N16T29K2yr0Y65Wo2WQRQAzBxOrfxNr3xkaBRw1oF2gKKbBoQoFI9nqVSP54rlj4+Q6zyDxTpnVQpfl5spLx4hUA5TpwmyR6RkWoanCK3KNFP54hRV4VitVhszSJSTlyw2mzPkBYMHCod5BwmLLGlinVwkiuiTmD17AeoAKACR8rGBFFleutBgK5dqhmal87M0ivyp/gyta6pcP9Scphqq5/NVsQrp0Cy5vsTMU48QSPRemVhbPIInNOSnCwskIrWtSKgrtPBkZQ6+fKiZL80ZmcovSBNpLIkCbaFRaBxmzRDpM2WyvHieNDtfqMnPF8qyJVJlgVouH/6YQFkwQCQa0mkySlwvQKYP7HqxQA5vdFMAMOAjFPPX6MD+XwGnKxTweUA7iX77HsPEdRMfafQpd3znE0KTG1uCjusGtgpAqw6QAs8WjYQ+XegA6CDhSQrtMZmGrDRJ0ZRUlednacZqYtFLUvnH8TXOXyUNHvxIrCi/D1cxYjI/f3SlqqQ2Jd8zP3qQvHjFY4mJ4lie1T5QWVYbyx2xJk2YRRZTHpDzxGIM72Zal0I/1Sh3Mj97SKJs5BA8xleUTZQXTqvNMI3NRR/AAMGIqRnKEYZkrn5kCj83V6StmCqzjPXG82y65OTkqAHCwQWJgpGYJv6huPSh86KTrcnWglGZEq1rolg3WJ4kUQ/OUBcWJYsenyhQlNSk8IelYzkajSWRKxyqT+UPzxmQmVWQxhssoP19CvIvHlboK3a8WHA7LQAOCSnFD9nsVsAuh2EvttT02/coNgfM5d9USuGCC1cMR9Nw55bBVgEoT4Hnikd22QKkpBT2T8kcNl+hLVLI9N6xySrv+mRj1Uy5fETaIK17Urpi+DweTydPEudpB8mKvclab3GydFjRILFlRLxs+MS4ZAFvAF9vTpaUVsRljixJzlQXpMQ+Fh2jnbooGmcOW1dCf0WNL00xrEBoco7VygvSBNLyUfLsSk+aooikjhsoKPGnKIaNSVfllkiVQwxilX+yJmd0abKwnEwvHyh4nB+bmU8cTXG8IePZKTkxuuxxSWKdrypTNTzAlZty+Lphucmi4aMzFLYinnJInjp7sECkLMiLiJj7UDK3ZEx8xtAJ+Jn+/wmK4UcKTfXWl/OVwTyBlC+AWi8gNDWsMwGg7AKHHWI47VPDF468+xMRdcCt+BCXjj3rwMmjnVsGsQtAASDTw4tGQj/puAX0+4Qgk5UkFQwN6LMH+wRyo3N4mtI2xWIpVwkUwwfyIng/UekLVQrTUE2cfPhjcXHDH+PKclW4TAzqAhpDgUSptGaiwmWz2X6SlJT0SHK/flFxhkmrY7LXACdrNUTJqqqShDlZUqsnoNUWikWiYQyr1dZXLpeTt4XPL2By9SP6aU2FYl3uSJHKWhYrz7VFakspZXPAAPNPQ6uOSHT50XJ5zcM8m+0nWq2NqVYX9pcaBwuU+oLMjAwlG1s0iT5fKDMUSLiqXBZek8R1uAdyHa1+ig4ww4+VmnE7fpaHS8YkwIYhaAe4lTs4aPnDoA+/Amf+/OO+LB2L+CKgk5/1CK5ddomhBVOTo48gWPEh5RAXljxDlo7nws9LiiFaMuY39Pt0BrN5cJyUK73r+HxMDBmrGD8uVjV+XKzYM4ivUsVKLJYuNf97BRQynjxXFxEh79onz10WL9GOO/vLXClZM+hddAYNy4SvS0Sws1QM+8ukHYNC0ernkMAxlwD2edXXPqzM69kp67fCbq9yOS4kdd4h7jRcjPgCcNl4eyr8uTwf0jTjj0dY5t/3CngQ8LBszpg801j4bW46vJU3AN4tTIdPhvNgS4mYCMABW0cBQHfvQYcCzvlV8Llbs5Z+z3uOV6a5+xz2SHeCj8oh0LkAZMIJewrUO/ngzB0DD0vntDO59iIiIiJ7ThJTO/vI5KwR8FpuEvw5PwneH8qFz0ZkwpYSIey2oQB0ogSWy6HZK4GdbtWeNytI4Or9x5fVOaZTXtH1S50MBTG9TJMLFz3kwonyFPhLcTZojVMhQlG7JGLAPRqnPmhQzFJw1E/sLLUG4FfZfHgDF4wanAEfDefBl49zYWuJEPbYxFAfdAeH8wR2AV7FjfcqDVn0295XbPfI6qAClzblkkhgSinkQwuuXuXKhJOOdKi3c+FQeSr8jy0fBmfVQKJ67NZHlFNnRohGD4ngVeVFCKsLIgSjBhPiZ/HY3CjNtOzHlNOsj6imWB5RTbRQ2yCVk63IxzS12X30U3MiddNzH5FNyosYFMjD+/U3Ts3rb5xBUTsjD48j8b6PyGrJ5z7BfeSzqjY3Ij2QF5HhzY3IqGjP9Ko8suVX5jwkHpXT7lhqZQ4hvzLnMX1tdkTw+EPisbnU/6rJjxCOKXhIOL7gIcm4wQ9JRg2OkE0o7KOc7OCoJ/8yXTvpsj23An6RI4Y3sxLhT3kp8F5hBvxrGBe+LsI1A0WwzyaChjIJHCpXkqleR7AlcMjhfEAJm1z6Z+j1cf8xFx6q96k3QAATSoRiBzGSmBKAU450OIoCUJoK9SWD4LNiCbw4fAjUFtphbF4xjMopgeqsEghYisFrLgG3uRScllLwWErBbbGB01ICLksRuCzFwW0p9dk6EtzWInBbS8BtxX02cJqpY/jdbS0LEj+3nYN0W5F4/xCxHOqeeL0z+DtcplJwm23UbzLj70Di8WLwmJCl4DGVgMdcBB78PXgOuaYMvBZbGEvBay0Hj7WM0JvlhrH5ZbAyXwuv5Q6EN3OS4O2CNPhbYTp8PIwLXzzOg23FIthjk5BYgIYyKRzCQI9yKtjzdKUcvvLq/imvealrxfJ+4p2KwZxjHum+GwEcGlJ2AdQLmpx8OOESwGlHBhwrS4fdNgHsGZkMux9Phq9HcOGTYWnwj6Ep8GFhCmzIHwRv56XAG3lp8EZeBryex4U38rjwZisz4I3cjODndHgzH89LgzdyM+HNPGRwf14a9Znsx/ND+6j95B75of0Usbw3c7nknm/mp5Lr3srlUsyj+AYeR5Lz0+GNfGr7evDzW3lp8FZeOryVmwlv5fLafnNeKryRlwKv43/CsnPT4K3cVHgrNwneyhkAf8odCO8UpsJ7QzLg42GZ8PnjPNhSLIBdJSLYS4xAwuCQD/t9GbR4+LDLqz7+SrWtdT2D7wU+rDQojwdkF697qMxiRBF045p2AjjtQrMwF46XpUN9aSbsLeLCtqJk2DRiEGwakgSfDUmCjUOT4e9DBsK7BQNgQ0EK/JVwEPwtH5kWZEqQqdSWHMfPyEGt398l5wbPIZ9Dx0LXB68NMT8FNuThNrn9/cP4bpChYxsKBsGGgiTYUJAMG8i+tLD7pVK/f/Ag8h/+mo/nDiLnbShAJsO7+cnwXv4geL8gFT4akg4bh2G/L4TNRQLYWSIkTf8BmxDqy0MCoIJTbhkcdKu+2eDJ7n7i5/uJLQGj81yFFL4hAaRCOOPB/AK4kCEfTrpEcNLBg6PlPDhsy4DGohTYW5QGO4rSYfvIDNg2MgO2jsyATSPS4ZNhqAhxiTL08TA+fDxMENzSvuNxcg5uM4Ofw/cHzw19D51LzqdxWGaQfPhn+D3oJPfEc3jwz2GZwW1YOeQe9PJC51PX4jn/Gp4JG4fz4FOi8GXC1yMFsBUXiy4Rwb4yMRzEvt+Gs4LFcLhcBsddCjjq18G77twO0U3fK+wIaJ6ECimcJTOKqCBSnGHc5OLDaWcmnHZkwnE7Dw6VZcJBGxcOlHJhf2kG7EMWZ8De4gzYVZIBXxelw+cjM+GLkUL4nJBP8XEhfDFSAF+M5MMXj/OpbehYK3lkS52H1wrCvlOfO5I69iXtfje/prPz2p9Lv576vQL4qkgIXxcLYWuxALaXCmCHTQQ7bWLYWyaGA2UiOFgmhkNlCjLeb/CIoMWnho88lk7N6d877KwwLIdKAZzzZLammcMRAuoEZ9BH4ODDSQcfjuPSp3Y+HLFnwBF7Jhwpz4SjhBnQWJ4Oe8u4sKNUANtKBbC1VAjbbELYViqCHaVCsh8f3PaS4DaMeP42W9g2xOCx7aXCDtwW3OK9yXdyDe7Ha8LOK2k7d7tNFHZ9W3nbbXgM94f/rrZz8fOOUjHssolhd5mEDPX2lIlgbxnV5zfYRdDgEJPFn446BXCiUgGf+fTL6M/5e41jLu1qMjwk5uKgqRhNxg4+8RM0O8IEwsUjesJplxBOO4VwBuniEQWy3i6APbYM2GPjw74ybB6FsLdMSB7YHrIVwl4b9plUv4ncGyI5xqe25AGHnVsWuiZ0PwHsw7n4GIRJ9lEV0u4aQuo8QrxH8D54DlUOdW3ot7RdFzy3tVzKxo/z/jAH0AG07JVLoCEY24fp3o/hs6lQwKe+7BX05/tAYHeFcdn1gAIuuwRwAdcRdqFvIJMIBMYRIEn34EZSLuYmtwia3GKiQOL3U24RHHHyoL6cD/V2MdTb8WFJCQ/iQ7NLoB4fXJkE6oNEsyk6T3B/fbk4uEVzKu6TQoNdTL1lyHIR1NtFUF9Ofab2U+e3Ee8Rdg4hlkP10cj251POG0Jix0fieaHfg8adoIMHtXti2cMtOndwuCeHU5jdy6OCTW7DEvpzfaCwxaudfyUgheueDGhySqDZSWUgDSclAG1sDtsiz3hEcMwlhEYHLpaMDwpToLV5w+hWsq7Yuvhy8FrMn9N6j+B3irRrg7l22s6ne+a6y/Zh3e0Wg7ZL4DDOAC5XwAmPFI75VPCZ1zqT/jwfSGyt0Nc0+UTXvvPiWsId3cekRQhjSG8IEYXgtFsEx50iOGwXkXVyD2EWTCQaSIJCQX/g4XH0N42p/x4QrXz7XWI471LCYaf2yid+g5/+HB9obKqw5h4PcA9DBWYdCb79wW24M6kzxxI1kuDDGReukC0gy6UfcgRbBLJ6Nj7EjhX8IAnAkWBK131O1aEP3YM7nYn0wOPPFcNSjvhVf79RKYHLLiE0kzUJRSS2EM3HOO0M5yCGCwMlEJT+QOkLlHHpqJMPjU5BsAXAfr3jQ725AIQiajpjx3t175ybEa/BrgNJfW6wy0lcH07kbAmoYLvX9MErnvzvl4Wvx1FT8/Bur3bhWa8CwCOEi4500gpgIAlOOqFiDTu2AuEC0YyjBjcPjrh4cMiOrYGYSosaUqi+l6QqG8f1qEegTb/eKSMu3UMknbvh6Yj58ztPIPGfiC8D5oImn3wXVAnhvBffbiFctAtbF6mgV3578uCsO5MaKjrQjiCEw7hY8m0ohPebRGm1K4hDp9EhgGMuHpwPyGGvT7v7M09uhzmFPwj8scrGPOg3rD/jUd24HhDDKS8XmjqJLQgxlLQ6tJIZup6bUC9wCeGQgx8cJdyphn5vieHbaNw5hL4RvwT2+eSwxa1//lnPSBI3+IPGRxWFlgaf6l/fVAoBPNR8AyquIBRtRI0cLtpRAIRwHpNW4T4yL0EEp10COOYUwCGnEBpQCDqpgHtN6g1vI45UQqt2kC26cX1iOFGphO1e7T8/vJ3UrT8I/PGPP2rwGqqb3LK9V6tFcMXHh0t2VBB5xLEUmpOIghE+K4nSCQTQ5BHCCbcIDqFiSIaI97clwDecZOgOCgOllCqIfnLGLYcWvwL2u7U7P/cWVGAYOP3v9yKI+a7C/lsDsllHPLKGG345XMWYQzcOA7nQ5KECTujT0oivwUVZEU+6hHDEiV2CiLIVhKZN30OStKzlcqh3SqHehfn5xCRWv8Ulg/NeJex1a3dv8uqnrph2m+laf8j4ndPI2OVTTTrsl26/4pcDeMRw0cOFJjflZaTrB60tgVsAJ7FLIMqhAA7ZsUu490JA3nqnEI66RXAmoISjPqx446avK7Jreiv+LuCr8/10S0VOaaPb+M5Jr+waVPABvCIIBaJSegE6mdCuIIAWkuKeDyfcaDDiEwFAfzquoNE2fm/fX3eoSIeMjNGxGcfP1HU4/brtHngcr8UYvWNOOZzyqaHFr4bdTs3lzR7Dax96c4dFvPQ9Cdn6T8Hfa4aI9vmVsw+5ZZ+c8fCv47wEDEu/5uHBBeJYEpHhJEYkN7t5cNLFgyNoPibdAWUnwHE4GYu3e4PlJMFCKMkC1X+jYEjgoFNOSMbuONTE/PsOOUnD0uKVQ5NfDbtcqqu7HJqPNnmNM/9SOfjmuQB60TP4osYi2l1hqD0YEL17yCs62eQTAaaxgQAPvvVz4Yo3Dc550ojecMIZtBWQDNoYZBEyyoSWVgm+6a2OpmC2LdQlXCI47JbCKVxAwyeFZr8M6j0S2OWWHd/l0r/zhSdn/J+9lttPxdqLnsO7Hg/ry4DFtNclf+KwR/q7eq/86waf7EKzTwLXAhL4tkIGVwMSuOQTQ4tPCk1eBTR5VdDkVRI2exRw1qOEc14VWWf3rF8HzX4tWWql0auE7S7VxS1uw9eb3abffuY2Tfmn22BCGwb9d/Ti+4K58ND7lUOTdjutxh1VWeVbKg3Td/j0q3e6lb/eZle8vtWpeXe7W//xFof2X5sd2o1bnZqPtzrU729zat/YZNe88rVLs+Zzl2bW5xUm9wcVWZY3Rg9OjrhXySF60Yte9KIXvehFL3rRi/uN/w8YjOcwOIJadgAAAABJRU5ErkJggg==";
+const { useState, useEffect, useMemo, useRef, createContext, useContext } = React;
+const html = htm.bind(React.createElement);
+
+/* ---------- Ikon (lucide, garis 2px) ---------- */
+const ICONS = {
+  scan:'<path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M7 12h10"/>',
+  qr:'<rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M21 21v.01"/><path d="M12 7v3a2 2 0 0 1-2 2H7"/><path d="M3 12h.01"/><path d="M12 3h.01"/><path d="M12 16v.01"/><path d="M16 12h1"/><path d="M21 12v.01"/><path d="M12 21v-1"/>',
+  form:'<rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/>',
+  send:'<path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/>',
+  bell:'<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',
+  calendar:'<rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/>',
+  checkc:'<circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>',
+  check:'<path d="M20 6 9 17l-5-5"/>',
+  x:'<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
+  mail:'<rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>',
+  msg:'<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>',
+  camera:'<path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/>',
+  pin:'<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>',
+  lock:'<rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+  user:'<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+  users:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+  wrench:'<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>',
+  clock:'<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',
+  alert:'<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/>',
+  info:'<circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>',
+  dash:'<rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/>',
+  kanban:'<path d="M6 5v11"/><path d="M12 5v6"/><path d="M18 5v14"/>',
+  settings:'<path d="M20 7h-9"/><path d="M14 17H5"/><circle cx="17" cy="17" r="3"/><circle cx="7" cy="7" r="3"/>',
+  sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>',
+  moon:'<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>',
+  reset:'<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/>',
+  play:'<polygon points="6 3 20 12 6 21 6 3"/>',
+  right:'<path d="m9 18 6-6-6-6"/>',
+  left:'<path d="m15 18-6-6 6-6"/>',
+  arrow:'<path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>',
+  star:'<path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/>',
+  image:'<rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>',
+  shield:'<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/>',
+  copy:'<rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>',
+  thumb:'<path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"/>',
+  history:'<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/>',
+  list:'<path d="M3 12h.01"/><path d="M3 18h.01"/><path d="M3 6h.01"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M8 6h13"/>',
+  phone:'<rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/>',
+  monitor:'<rect width="20" height="14" x="2" y="3" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/>',
+  hourglass:'<path d="M5 22h14"/><path d="M5 2h14"/><path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22"/><path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2"/>',
+  printer:'<path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 9V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6"/><rect x="6" y="14" width="12" height="8" rx="1"/>',
+  plus:'<path d="M5 12h14"/><path d="M12 5v14"/>',
+};
+function Icon({ name, size = 16, className = '' }) {
+  return html`<svg className=${'ic ' + className} width=${size} height=${size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" dangerouslySetInnerHTML=${{ __html: ICONS[name] || '' }}></svg>`;
+}
+
+/* ---------- Master data ---------- */
+const DOMAIN = 'tiket.apotekalpro.id';
+const AREA = { meeting:'Ruang Meeting', direksi:'Ruang Direksi', toilet:'Toilet', kerja:'Area Kerja', pantry:'Pantry', training:'Ruang Training', musala:'Musala', wudhu:'Tempat Wudhu' };
+const LOCS = [
+  ['L1-GENUINE',1,'Ruang Genuine','meeting'],['L1-WELCOMING',1,'Ruang Welcoming','meeting'],['L1-INVOLVED',1,'Ruang Involved','meeting'],
+  ['L1-TOILET-PRIA-URINOIR',1,'Toilet Pria (Urinoir)','toilet'],['L1-TOILET-CAMPUR',1,'Toilet Campur','toilet'],
+  ['L1-AREA-KERJA',1,'Area Kerja','kerja'],['L1-CCO',1,'Ruang CCO','direksi'],['L1-CSO',1,'Ruang CSO','direksi'],
+  ['L2-ACCOUNTABLE',2,'Ruang Accountable','meeting'],['L2-CONSIDERATE',2,'Ruang Considerate','meeting'],['L2-YONG-XIN-KAIZEN',2,'Ruang Yong Xin Kaizen','meeting'],
+  ['L2-PANTRY',2,'Pantry','pantry'],['L2-COO',2,'Ruang COO','direksi'],['L2-AREA-KERJA',2,'Area Kerja','kerja'],['L2-TOILET-CAMPUR',2,'Toilet Campur','toilet'],
+  ['L3-CEO',3,'Ruang CEO','direksi'],['L3-CRO',3,'Ruang CRO','direksi'],['L3-AREA-KERJA',3,'Area Kerja','kerja'],['L3-TOILET-WANITA',3,'Toilet Wanita','toilet'],['L3-TOILET-PRIA',3,'Toilet Pria','toilet'],
+  ['L4-TRAINING',4,'Ruang Training','training'],['L4-MUSALA',4,'Musala','musala'],['L4-TOILET-WANITA',4,'Toilet Wanita','toilet'],['L4-TEMPAT-WUDHU',4,'Tempat Wudhu','wudhu'],
+].map(([code, floor, name, area]) => ({ code, floor, name, area }));
+const LOC = Object.fromEntries(LOCS.map(l => [l.code, l]));
+const locLabel = l => `Lt ${l.floor} · ${l.name}`;
+
+const TEAMS = {
+  ga:{ name:'GA', group:'GA Fasilitas HQ', admin:'Budi', staff:['Darto','Yanto'] },
+  it:{ name:'IT', group:'IT Support HQ', admin:'Andre', staff:['Fajar','Rizky'] },
+  hk:{ name:'Housekeeping', group:'Housekeeping HQ', admin:'Sinta', staff:['Sri','Wati'] },
+};
+const CATS = {
+  listrik:{ name:'Listrik & lampu', team:'ga' }, ac:{ name:'AC', team:'ga' }, plumbing:{ name:'Plumbing & air', team:'ga' },
+  bangunan:{ name:'Bangunan', team:'ga' }, furnitur:{ name:'Furnitur', team:'ga' }, keamanan:{ name:'Keamanan', team:'ga' },
+  it:{ name:'IT & jaringan', team:'it' }, av:{ name:'Proyektor/TV', team:'it' },
+  kebersihan:{ name:'Kebersihan', team:'hk' }, konsumabel:{ name:'Konsumabel', team:'hk' },
+};
+const JENIS = ['Kerusakan','Permintaan','Kebersihan','Keamanan'];
+const jenisFor = cat => cat === 'konsumabel' ? 'Permintaan' : cat === 'kebersihan' ? 'Kebersihan' : cat === 'keamanan' ? 'Keamanan' : 'Kerusakan';
+const QUICK = {
+  toilet:[['Air mati','plumbing'],['Kloset/urinoir mampet','plumbing'],['Keran bocor','plumbing'],['Sabun/tisu habis','konsumabel'],['Bau tidak sedap','kebersihan'],['Lampu mati','listrik']],
+  pantry:[['Galon habis','konsumabel'],['Dispenser rusak','listrik'],['Kulkas tidak dingin','listrik'],['Wastafel mampet','plumbing'],['Peralatan makan kurang','konsumabel'],['Area kotor','kebersihan']],
+  kerja:[['AC tidak dingin','ac'],['Lampu mati','listrik'],['Stop kontak mati','listrik'],['Kursi/meja rusak','furnitur'],['WiFi lambat/putus','it']],
+  meeting:[['AC tidak dingin','ac'],['Proyektor/TV bermasalah','av'],['Kursi/meja rusak','furnitur'],['Lampu mati','listrik'],['WiFi lambat/putus','it']],
+  musala:[['Karpet/sajadah kotor','kebersihan'],['Mukena/sarung kurang','konsumabel'],['Lampu mati','listrik'],['AC tidak dingin','ac']],
+  wudhu:[['Air mati','plumbing'],['Keran bocor','plumbing'],['Lantai licin/kotor','kebersihan'],['Lampu mati','listrik']],
+};
+QUICK.direksi = QUICK.meeting; QUICK.training = QUICK.meeting;
+const DIVISI = ['Finance','Accounting','Tax','HR & GA','IT','Operation','Procurement','Marketing','Legal','Business Development','Sekretariat Direksi','Lainnya'];
+
+const ST = {
+  BARU:{ label:'Baru', tone:'sky' }, DITERIMA:{ label:'Diterima', tone:'violet' }, DIJADWALKAN:{ label:'Dijadwalkan', tone:'brand' },
+  DIKERJAKAN:{ label:'Dikerjakan', tone:'brand' }, MENUNGGU:{ label:'Menunggu', tone:'amber' }, SELESAI:{ label:'Selesai', tone:'emerald' },
+  CLOSED:{ label:'Closed', tone:'emerald' }, DITOLAK:{ label:'Ditolak', tone:'red' }, DUPLIKAT:{ label:'Duplikat', tone:'' },
+};
+const OPEN = ['BARU','DITERIMA','DIJADWALKAN','DIKERJAKAN','MENUNGGU'];
+const THRESHOLD = 1000000;
+const AUTO_CLOSE_DAYS = 3;
+const OPS = 'Hendri (Ops Manager)';
+const OPS_EMAIL = 'operation@apotekalpro.id';
+const adminOf = team => `${TEAMS[team].admin} (Admin ${TEAMS[team].name})`;
+
+/* ---------- Waktu & format ---------- */
+const WORK = { days:[1,2,3,4,5], start:9, end:16 };
+const isWorkday = d => WORK.days.includes(d.getDay());
+function addWorkDays(ms, n) { const d = new Date(ms); let c = 0; while (c < n) { d.setDate(d.getDate() + 1); if (isWorkday(d)) c++; } return d.getTime(); }
+function workdaysAgo(n, h, m) { const d = new Date(); d.setHours(h, m, 0, 0); let c = 0; while (c < n) { d.setDate(d.getDate() - 1); if (isWorkday(d)) c++; } return d.getTime(); }
+function nextWorkSlot(ms, hour) { const d = new Date(ms); d.setDate(d.getDate() + 1); while (!isWorkday(d)) d.setDate(d.getDate() + 1); d.setHours(hour, 0, 0, 0); return d.getTime(); }
+function workHoursBetween(a, b) {
+  if (b <= a) return 0; let total = 0; const d = new Date(a); d.setHours(0, 0, 0, 0);
+  while (d.getTime() < b) {
+    if (isWorkday(d)) { const s = new Date(d); s.setHours(WORK.start, 0, 0, 0); const e = new Date(d); e.setHours(WORK.end, 0, 0, 0);
+      const lo = Math.max(a, s.getTime()), hi = Math.min(b, e.getTime()); if (hi > lo) total += hi - lo; }
+    d.setDate(d.getDate() + 1);
+  }
+  return total / 3600000;
+}
+const minsAgo = m => Date.now() - m * 60000;
+const fmtDT = ms => new Intl.DateTimeFormat('id-ID', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' }).format(ms);
+const fmtDay = ms => new Intl.DateTimeFormat('id-ID', { weekday:'long', day:'numeric', month:'long' }).format(ms);
+const fmtTime = ms => new Intl.DateTimeFormat('id-ID', { hour:'2-digit', minute:'2-digit' }).format(ms);
+const fmtRp = n => 'Rp ' + new Intl.NumberFormat('id-ID').format(n || 0);
+const fmtKB = b => Math.max(1, Math.round(b / 1024)) + ' KB';
+function relTime(ms) { const m = Math.round((Date.now() - ms) / 60000); if (m < 1) return 'baru saja'; if (m < 60) return m + ' menit lalu'; const h = Math.round(m / 60); if (h < 24) return h + ' jam lalu'; return Math.round(h / 24) + ' hari lalu'; }
+const pad = n => String(n).padStart(2, '0');
+const toInput = ms => { const d = new Date(ms); return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`; };
+const yymm = (() => { const d = new Date(); return String(d.getFullYear()).slice(2) + pad(d.getMonth() + 1); })();
+const mkCode = n => `TKT-${yymm}-${String(n).padStart(4, '0')}`;
+const initials = s => (s || '?').split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
+
+/* ---------- Foto contoh & kompresi ---------- */
+function samplePhoto(label, after) {
+  const c = document.createElement('canvas'); c.width = 640; c.height = 480; const g = c.getContext('2d');
+  g.fillStyle = after ? '#d1fae5' : '#e2e8f0'; g.fillRect(0, 0, 640, 480);
+  g.strokeStyle = after ? '#a7f3d0' : '#cbd5e1'; g.lineWidth = 2;
+  for (let x = 0; x <= 640; x += 40) { g.beginPath(); g.moveTo(x, 0); g.lineTo(x, 480); g.stroke(); }
+  for (let y = 0; y <= 480; y += 40) { g.beginPath(); g.moveTo(0, y); g.lineTo(640, y); g.stroke(); }
+  g.fillStyle = after ? '#047857' : '#475569'; g.font = '700 30px "Plus Jakarta Sans", sans-serif'; g.textAlign = 'center';
+  g.fillText(after ? 'FOTO SESUDAH' : 'FOTO LAPORAN', 320, 220); g.font = '500 24px "Plus Jakarta Sans", sans-serif'; g.fillText(label, 320, 262);
+  const url = c.toDataURL('image/jpeg', 0.7); return { url, size: Math.round(url.length * 0.75), sample: true };
+}
+function compressFile(file) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = () => { const img = new Image();
+      img.onload = () => { const k = Math.min(1, 1280 / Math.max(img.width, img.height)); const c = document.createElement('canvas');
+        c.width = Math.round(img.width * k); c.height = Math.round(img.height * k); c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+        const url = c.toDataURL('image/jpeg', 0.72); res({ url, size: Math.round(url.length * 0.75), orig: file.size }); };
+      img.onerror = rej; img.src = r.result; };
+    r.onerror = rej; r.readAsDataURL(file);
+  });
+}
+
+/* ---------- Notifikasi ---------- */
+let NID = 0;
+function makeNotifs(kind, t, x = {}) {
+  const loc = LOC[t.loc], cat = CATS[t.cat], team = TEAMS[t.team], at = x.at || Date.now();
+  const base = { at, ticketId: t.id, fresh: !x.at };
+  const tg = (title, text, buttons = []) => ({ ...base, id: 'n' + (++NID), ch: 'tg', to: x.dm ? 'Pesan pribadi · ' + OPS : team.group, title, text, buttons });
+  const mail = (to, subject, intro, fields, cta) => ({ ...base, id: 'n' + (++NID), ch: 'email', to, subject, intro, fields, cta });
+  const subj = `[${t.code}] ${loc.name} Lt ${loc.floor} · ${t.issue || cat.name}`;
+  const toReporter = t.reporter.email;
+  switch (kind) {
+    case 'new': return [
+      mail(OPS_EMAIL, 'Laporan baru ' + subj, `Ada laporan fasilitas baru untuk Tim ${team.name}.`,
+        [['Lokasi', locLabel(loc)], ['Kategori', cat.name], ['Jenis', t.jenis], ['Tim', team.name], ['Pelapor', `${t.reporter.nama} · ${t.reporter.divisi} · ${t.reporter.wa}`], ['Deskripsi', t.desc || t.issue], ['Foto', t.photos.length + ' foto (Google Drive)']], 'Buka tiket'),
+      tg(`Tiket baru ${t.code}`, `${locLabel(loc)}\n${cat.name} · ${t.issue || '-'}\n"${t.desc || t.issue}"\nPelapor: ${t.reporter.nama} (${t.reporter.divisi}) · ${t.reporter.wa}`,
+        [{ label:'Terima', act:'accept' }, { label:'Ambil tiket', act:'take' }]),
+    ];
+    case 'accepted': return [tg(`${t.code} diterima`, `Ditangani ${x.by}${t.assignee ? ', pelaksana ' + t.assignee : ''}.`)];
+    case 'reassigned': return [tg(`Tiket dialihkan ke ${team.name}: ${t.code}`, `${locLabel(loc)}\n${cat.name} · ${t.issue || '-'}\n"${t.desc || t.issue}"`, [{ label:'Terima', act:'accept' }, { label:'Ambil tiket', act:'take' }])];
+    case 'scheduled': return [
+      tg(`${t.code} dijadwalkan`, `${fmtDay(t.schedule)} pukul ${fmtTime(t.schedule)}\nPelaksana: ${t.exec === 'vendor' ? t.vendor + ' (vendor)' : t.assignee}${t.cost ? '\nEstimasi biaya: ' + fmtRp(t.cost) : ''}`),
+      ...(toReporter ? [mail(toReporter, `Laporan Anda dijadwalkan: ${t.code}`, `Halo ${t.reporter.nama}, laporan Anda di ${locLabel(loc)} sudah dijadwalkan.`, [['Jadwal', `${fmtDay(t.schedule)}, ${fmtTime(t.schedule)}`], ['Pelaksana', t.exec === 'vendor' ? t.vendor : 'Tim ' + team.name], ['Status', `${DOMAIN}/t/${t.code}`]], 'Lihat status')] : []),
+    ];
+    case 'approval': return [
+      mail(OPS_EMAIL + ' · ' + OPS, `Perlu persetujuan biaya ${fmtRp(t.cost)}: ${t.code}`, `Biaya perbaikan melebihi ambang ${fmtRp(THRESHOLD)} dan perlu persetujuan Ops Manager.`, [['Lokasi', locLabel(loc)], ['Masalah', t.issue || cat.name], ['Vendor', t.vendor || 'Internal'], ['Estimasi', fmtRp(t.cost)], ['Diajukan', x.by]], 'Tinjau'),
+      { ...tg(`Persetujuan biaya ${t.code}`, `${locLabel(loc)} · ${t.issue || cat.name}\nVendor: ${t.vendor || 'Internal'}\nEstimasi: ${fmtRp(t.cost)}\nDiajukan: ${x.by}`, [{ label:'Setujui', act:'approve' }, { label:'Tolak', act:'deny' }]), to: 'Pesan pribadi · ' + OPS },
+    ];
+    case 'approved': return [tg(`Biaya ${t.code} disetujui`, `${fmtRp(t.cost)} disetujui ${OPS}. Tiket lanjut dijadwalkan.`)];
+    case 'denied': return [tg(`Biaya ${t.code} ditolak`, `${OPS} menolak estimasi ${fmtRp(t.cost)}. Cari alternatif vendor/solusi.`)];
+    case 'done': return [
+      tg(`${t.code} selesai dikerjakan`, `Foto sesudah sudah diunggah. Menunggu konfirmasi pelapor (otomatis Closed ${fmtDay(t.autoCloseAt)}).`),
+      ...(toReporter ? [mail(toReporter, `Mohon konfirmasi: ${t.code} selesai dikerjakan`, `Halo ${t.reporter.nama}, perbaikan di ${locLabel(loc)} sudah selesai. Mohon konfirmasi dan beri penilaian.`, [['Catatan', t.doneNote || '-'], ['Konfirmasi', `${DOMAIN}/t/${t.code}`], ['Batas', 'Otomatis Closed ' + fmtDay(t.autoCloseAt)]], 'Konfirmasi')] : []),
+    ];
+    case 'reopened': return [tg(`${t.code} dibuka lagi oleh pelapor`, `"${x.note || 'Masalah belum beres.'}"`)];
+    case 'closed': return [tg(`${t.code} Closed`, x.auto ? `Tanpa respons pelapor ${AUTO_CLOSE_DAYS} hari kerja, ditutup otomatis.` : `Pelapor konfirmasi sudah beres. Rating ${t.rating}/5${t.feedback ? '\n"' + t.feedback + '"' : ''}`)];
+    case 'metoo': return [tg(`+1 laporan serupa ${t.code}`, `${x.nama} juga mengalami ${(t.issue || cat.name).toLowerCase()} di ${locLabel(loc)}. Total ${t.meToo + 1} orang.`)];
+    case 'rejected': return toReporter ? [mail(toReporter, `Laporan ${t.code} tidak dapat diproses`, `Halo ${t.reporter.nama}, laporan Anda tidak dapat diproses.`, [['Alasan', t.rejectReason]], 'Lihat status')] : [];
+    default: return [];
+  }
+}
+
+/* ---------- Data contoh ---------- */
+const PEOPLE = {
+  rina:{ nama:'Rina Kartika', divisi:'Finance', wa:'0812-3456-7890', email:'' },
+  dewi:{ nama:'Dewi Anggraini', divisi:'Marketing', wa:'0813-2211-4455', email:'' },
+  agus:{ nama:'Agus Salim', divisi:'Procurement', wa:'0815-7788-1122', email:'' },
+  maya:{ nama:'Maya Putri', divisi:'HR & GA', wa:'0817-6655-3344', email:'' },
+  yoga:{ nama:'Yoga Pratama', divisi:'IT', wa:'0821-9988-7766', email:'' },
+  lestari:{ nama:'Lestari Wulan', divisi:'Accounting', wa:'0856-1234-9876', email:'' },
+  hana:{ nama:'Hana Safitri', divisi:'Tax', wa:'0819-4433-2211', email:'' },
+  nadia:{ nama:'Nadia Rahma', divisi:'Sekretariat Direksi', wa:'0811-2020-3030', email:'' },
+};
+function seed() {
+  const defs = [
+    { loc:'L3-AREA-KERJA', cat:'ac', issue:'AC tidak dingin', desc:'AC sisi jendela hanya keluar angin sejak pagi.', r:'dewi', exec:'vendor', vendor:'CV Sejuk Teknik', cost:350000, rating:4, feedback:'Sudah dingin lagi.',
+      flow:[['BARU',workdaysAgo(12,9,20)],['DITERIMA',workdaysAgo(12,9,55),'Diterima'],['DIJADWALKAN',workdaysAgo(12,11,0),'Vendor CV Sejuk Teknik dijadwalkan besok 10.00'],['DIKERJAKAN',workdaysAgo(11,10,5),'Mulai dikerjakan'],['SELESAI',workdaysAgo(11,11,30),'Freon diisi ulang'],['CLOSED',workdaysAgo(10,9,10),'Pelapor konfirmasi sudah beres']] },
+    { loc:'L2-TOILET-CAMPUR', cat:'plumbing', issue:'Keran bocor', desc:'Keran wastafel kiri menetes terus.', r:'lestari', assignee:'Darto', cost:75000, rating:5,
+      flow:[['BARU',workdaysAgo(10,13,10)],['DITERIMA',workdaysAgo(10,13,30),'Diterima'],['DIJADWALKAN',workdaysAgo(10,13,35),'Dijadwalkan hari ini 15.00'],['DIKERJAKAN',workdaysAgo(10,15,0),'Mulai dikerjakan'],['SELESAI',workdaysAgo(10,15,40),'Ganti karet keran'],['CLOSED',workdaysAgo(9,9,15),'Pelapor konfirmasi sudah beres']] },
+    { loc:'L4-TRAINING', cat:'av', issue:'Proyektor/TV bermasalah', desc:'Proyektor tidak mendeteksi HDMI laptop.', r:'maya', assignee:'Fajar', rating:5,
+      flow:[['BARU',workdaysAgo(8,9,5)],['DITERIMA',workdaysAgo(8,9,15),'Diterima'],['DIJADWALKAN',workdaysAgo(8,9,20),'Dicek 10.00'],['DIKERJAKAN',workdaysAgo(8,10,0),'Mulai dikerjakan'],['SELESAI',workdaysAgo(8,10,25),'Kabel HDMI diganti'],['CLOSED',workdaysAgo(7,14,0),'Pelapor konfirmasi sudah beres']] },
+    { loc:'L1-TOILET-PRIA-URINOIR', cat:'listrik', issue:'Lampu mati', desc:'Lampu dekat pintu mati.', r:'yoga', assignee:'Yanto', cost:45000, rating:5,
+      flow:[['BARU',workdaysAgo(6,10,40)],['DITERIMA',workdaysAgo(6,11,0),'Diterima'],['DIJADWALKAN',workdaysAgo(6,11,5),'Dijadwalkan 13.00'],['DIKERJAKAN',workdaysAgo(6,13,0),'Mulai dikerjakan'],['SELESAI',workdaysAgo(6,13,20),'Ganti lampu LED 12W'],['CLOSED',workdaysAgo(5,9,30),'Pelapor konfirmasi sudah beres']] },
+    { loc:'L3-AREA-KERJA', cat:'it', jenis:'Permintaan', issue:'', desc:'Mohon monitor tambahan untuk meja hot desk.', r:'hana', rejectReason:'Pengadaan monitor lewat form IT Asset Request, bukan tiket fasilitas.',
+      flow:[['BARU',workdaysAgo(4,14,0)],['DITOLAK',workdaysAgo(4,14,30),'Ditolak: pengadaan lewat form IT Asset Request']] },
+    { loc:'L1-GENUINE', cat:'it', issue:'WiFi lambat/putus', desc:'WiFi sering putus saat meeting online.', r:'rina', mine:true, assignee:'Rizky', afterPhoto:true, doneNote:'Access point ruangan diganti.',
+      flow:[['BARU',workdaysAgo(2,10,0)],['DITERIMA',workdaysAgo(2,10,20),'Diterima'],['DIJADWALKAN',workdaysAgo(2,10,25),'Dicek 13.00'],['DIKERJAKAN',workdaysAgo(2,13,0),'Mulai dikerjakan'],['SELESAI',workdaysAgo(1,11,0),'Access point ruangan diganti']] },
+    { loc:'L2-PANTRY', cat:'listrik', issue:'Kulkas tidak dingin', desc:'Kulkas pantry tidak dingin, makanan cepat basi.', r:'agus', exec:'vendor', vendor:'PT Servis Elektronik Jaya', cost:2400000, approval:'pending', waitReason:'approval',
+      flow:[['BARU',workdaysAgo(1,9,30)],['DITERIMA',workdaysAgo(1,9,50),'Diterima'],['MENUNGGU',workdaysAgo(1,14,0),'Estimasi Rp 2.400.000 (ganti kompresor), menunggu persetujuan Ops Manager']] },
+    { loc:'L3-TOILET-WANITA', cat:'konsumabel', issue:'Sabun/tisu habis', desc:'Sabun cuci tangan dan tisu habis di dua bilik.', r:'hana', assignee:'Sri',
+      flow:[['BARU',minsAgo(200)],['DITERIMA',minsAgo(190),'Diterima'],['DIJADWALKAN',minsAgo(186),'Diisi ulang segera'],['DIKERJAKAN',minsAgo(50),'Mulai dikerjakan']] },
+    { loc:'L1-AREA-KERJA', cat:'listrik', issue:'Stop kontak mati', desc:'Stop kontak meja baris C tidak ada arus.', r:'lestari',
+      flow:[['BARU',minsAgo(150)],['DITERIMA',minsAgo(120),'Diterima']] },
+    { loc:'L2-PANTRY', cat:'konsumabel', issue:'Galon habis', desc:'Galon dispenser habis, stok cadangan juga kosong.', r:'yoga', assignee:'Wati', meToo:2, schedule:Date.now() + 90 * 60000,
+      flow:[['BARU',minsAgo(70)],['DITERIMA',minsAgo(62),'Diterima'],['DIJADWALKAN',minsAgo(60),'Galon diantar vendor air']], extra:[[minsAgo(40),'Maya Putri (pelapor)','Saya juga mengalami (+1)'],[minsAgo(25),'Lestari Wulan (pelapor)','Saya juga mengalami (+1)']] },
+    { loc:'L4-MUSALA', cat:'kebersihan', issue:'Karpet/sajadah kotor', desc:'Karpet saf depan kotor dan bau.', r:'maya', flow:[['BARU',minsAgo(35)]] },
+    { loc:'L3-CEO', cat:'ac', issue:'AC tidak dingin', desc:'AC ruangan tidak dingin, ada tamu jam 14.00.', r:'nadia', flow:[['BARU',minsAgo(18)]] },
+  ];
+  const tickets = defs.map((d, i) => {
+    const rep = PEOPLE[d.r]; const team = CATS[d.cat].team; const created = d.flow[0][1];
+    const events = []; let prev = null;
+    d.flow.forEach(([to, at, text], j) => {
+      const actor = j === 0 ? rep.nama + ' (pelapor)' : to === 'CLOSED' ? rep.nama + ' (pelapor)' : to === 'MENUNGGU' && d.waitReason === 'approval' ? adminOf(team) : adminOf(team);
+      events.push({ at, actor, text: j === 0 ? 'Laporan dibuat lewat QR ' + d.loc : text, from: prev, to }); prev = to;
+    });
+    (d.extra || []).forEach(([at, actor, text]) => events.push({ at, actor, text, from: null, to: null }));
+    events.sort((a, b) => a.at - b.at);
+    const doneAt = (d.flow.find(f => f[0] === 'SELESAI') || [])[1];
+    const t = {
+      id: 's' + (i + 1), code: mkCode(i + 1), loc: d.loc, cat: d.cat, jenis: d.jenis || jenisFor(d.cat), issue: d.issue, desc: d.desc,
+      photos: [{ ...samplePhoto(d.issue || 'Permintaan'), fase: 'before' }], reporter: rep, status: d.flow[d.flow.length - 1][0], waitReason: d.waitReason || '',
+      team, assignee: d.assignee || '', exec: d.exec || 'internal', vendor: d.vendor || '', cost: d.cost || 0, approval: d.approval || null,
+      schedule: d.schedule || null, rating: d.rating || null, feedback: d.feedback || '', meToo: d.meToo || 0, createdAt: created, events,
+      rejectReason: d.rejectReason || '', doneNote: d.doneNote || '', autoCloseAt: doneAt ? addWorkDays(doneAt, AUTO_CLOSE_DAYS) : null, mine: !!d.mine, parent: null,
+    };
+    if (d.afterPhoto || ['SELESAI','CLOSED'].includes(t.status)) t.photos.push({ ...samplePhoto(d.doneNote || 'Pekerjaan selesai', true), fase: 'after' });
+    return t;
+  });
+  const notifs = [];
+  const byId = Object.fromEntries(tickets.map(t => [t.id, t]));
+  notifs.push(...makeNotifs('approval', byId.s7, { at: workdaysAgo(1, 14, 0), by: adminOf('ga') }));
+  notifs.push(...makeNotifs('new', byId.s11, { at: minsAgo(35) }));
+  notifs.push(...makeNotifs('new', byId.s12, { at: minsAgo(18) }));
+  notifs.sort((a, b) => b.at - a.at);
+  return { tickets, notifs };
+}
+
+/* ---------- Konteks aplikasi ---------- */
+const Ctx = createContext(null);
+const useApp = () => useContext(Ctx);
+const SAVED_ID = { ...PEOPLE.rina };
+const emptyForm = () => ({ jenis:'', cat:'', issue:'', desc:'', photos:[], ...SAVED_ID, editId:false, dupDismissed:false, errors:{} });
+
+function Chip({ status, children }) {
+  const s = ST[status]; return html`<span className=${'chip ' + (s ? s.tone : '')}>${children || s.label}</span>`;
+}
+function statusText(t) {
+  if (t.status === 'MENUNGGU') return t.waitReason === 'approval' ? 'Menunggu approval' : 'Menunggu part/vendor';
+  return ST[t.status].label;
+}
+
+/* ---------- QR ---------- */
+function QR({ text, size = 120 }) {
+  const m = useMemo(() => {
+    if (!window.qrcode) return null;
+    try { const q = qrcode(0, 'M'); q.addData(text); q.make(); const n = q.getModuleCount(); let d = '';
+      for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) if (q.isDark(r, c)) d += `M${c},${r}h1v1h-1z`; return { n, d }; } catch (e) { return null; }
+  }, [text]);
+  if (!m) return html`<div style=${{ width:size, height:size, display:'grid', placeItems:'center', border:'1px dashed #94a3b8', borderRadius:8, fontSize:11 }}>QR</div>`;
+  return html`<svg width=${size} height=${size} viewBox=${`-2 -2 ${m.n + 4} ${m.n + 4}`} shapeRendering="crispEdges" role="img" aria-label=${'Kode QR ' + text}>
+    <rect x="-2" y="-2" width=${m.n + 4} height=${m.n + 4} style=${{ fill:'#ffffff' }}></rect><path d=${m.d} style=${{ fill:'#0f172a' }}></path></svg>`;
+}
+
+/* ================= HP PELAPOR ================= */
+function Phone() {
+  const { phone, setPhone, db } = useApp();
+  const t = db.tickets.find(x => x.id === phone.ticketId);
+  const addr = phone.screen === 'scan' ? 'Kamera · pindai QR' : phone.screen === 'form' ? `${DOMAIN}/r/${phone.loc}` : phone.screen === 'mine' ? `${DOMAIN}/saya` : t ? `${DOMAIN}/t/${t.code}` : DOMAIN;
+  const mineCount = db.tickets.filter(x => x.mine).length;
+  return html`<div className="device"><div className="screen">
+    <div className="addr"><${Icon} name=${phone.screen === 'scan' ? 'camera' : 'lock'} size=${12} /><span>${addr}</span></div>
+    ${phone.screen !== 'scan' && html`<div className="apphead"><div className="logo sm"><img src=${LOGO} alt="Apotek Alpro" /></div><div><b>Lapor Fasilitas</b><span className="caption">Kantor Pusat Apotek Alpro</span></div></div>`}
+    <div className="pbody">
+      ${phone.screen === 'scan' && html`<${PhoneScan} />`}
+      ${phone.screen === 'form' && html`<${PhoneForm} />`}
+      ${phone.screen === 'success' && t && html`<${PhoneSuccess} t=${t} />`}
+      ${phone.screen === 'status' && t && html`<${PhoneStatus} t=${t} />`}
+      ${phone.screen === 'mine' && html`<${PhoneMine} />`}
+    </div>
+    <nav className="pnav" aria-label="Navigasi HP">
+      <button aria-current=${String(['scan','form'].includes(phone.screen))} onClick=${() => setPhone({ screen:'scan', loc:null, ticketId:null })}><${Icon} name="scan" size=${20} />Pindai QR</button>
+      <button aria-current=${String(['mine','status','success'].includes(phone.screen))} onClick=${() => setPhone({ ...phone, screen:'mine' })}><${Icon} name="list" size=${20} />Laporan saya (${mineCount})</button>
+    </nav>
+  </div></div>`;
+}
+
+function PhoneScan() {
+  const { scan } = useApp();
+  const floors = [1, 2, 3, 4];
+  return html`<${React.Fragment}>
+    <div className="viewfinder" aria-hidden="true"><div className="frame"><div className="line"></div></div><p>Arahkan kamera ke stiker QR</p></div>
+    <div className="callout brand"><${Icon} name="info" /><div><b>Simulasi scan.</b> Ketuk stiker yang dipindai. Di aplikasi asli, kamera HP langsung membuka form untuk lokasi itu.</div></div>
+    ${floors.map(f => html`<section className="floor" key=${f}><h3>Lantai ${f}</h3><div className="locgrid">
+      ${LOCS.filter(l => l.floor === f).map(l => html`<button className="locbtn" key=${l.code} onClick=${() => scan(l.code)}><${Icon} name="qr" />${l.name}</button>`)}
+    </div></section>`)}
+  <//>`;
+}
+
+function PhoneForm() {
+  const { phone, setPhone, form, setForm, db, submit, meToo } = useApp();
+  const loc = LOC[phone.loc]; const chips = QUICK[loc.area] || [];
+  const [pickLoc, setPickLoc] = useState(false);
+  const fileRef = useRef(null);
+  const set = patch => setForm(f => ({ ...f, ...patch, errors: { ...f.errors, ...Object.fromEntries(Object.keys(patch).map(k => [k, ''])) } }));
+  const dup = form.cat && !form.dupDismissed ? db.tickets.find(t => t.loc === loc.code && t.cat === form.cat && OPEN.includes(t.status)) : null;
+  const team = form.cat ? TEAMS[CATS[form.cat].team] : null;
+  const e = form.errors || {};
+  async function onFiles(ev) {
+    const files = [...ev.target.files].slice(0, 3 - form.photos.length);
+    const out = []; for (const f of files) { try { out.push(await compressFile(f)); } catch (err) {} }
+    setForm(fm => ({ ...fm, photos: [...fm.photos, ...out].slice(0, 3) })); ev.target.value = '';
+  }
+  return html`<${React.Fragment}>
+    <div>
+      <div className="lockloc">
+        <div className="pin"><${Icon} name="pin" size=${18} /></div>
+        <div style=${{ flex:1, minWidth:0 }}><b>Lantai ${loc.floor} · ${loc.name}</b><span className="caption"><${Icon} name="lock" size=${11} /> Terisi otomatis dari QR ${loc.code}</span></div>
+      </div>
+      <div className="row" style=${{ marginTop:6, justifyContent:'flex-end' }}><button className="linkbtn" onClick=${() => setPickLoc(!pickLoc)}>${pickLoc ? 'Tutup' : 'Bukan lokasi ini?'}</button></div>
+      ${pickLoc && html`<div className="field"><label htmlFor="f-loc">Pilih lokasi lain</label>
+        <select id="f-loc" className="select" value=${loc.code} onChange=${ev => { setPhone({ ...phone, loc: ev.target.value }); setForm(f => ({ ...f, issue:'', cat:'', jenis:'', dupDismissed:false })); setPickLoc(false); }}>
+          ${[1,2,3,4].map(fl => html`<optgroup key=${fl} label=${'Lantai ' + fl}>${LOCS.filter(l => l.floor === fl).map(l => html`<option key=${l.code} value=${l.code}>${l.name}</option>`)}</optgroup>`)}
+        </select></div>`}
+    </div>
+
+    <div className="field"><span className="flabel">Masalah umum di ${AREA[loc.area]}</span>
+      <div className="qchips">${chips.map(([label, cat]) => html`<button key=${label} className="qchip" aria-pressed=${String(form.issue === label)}
+        onClick=${() => form.issue === label ? set({ issue:'' }) : set({ issue: label, cat, jenis: jenisFor(cat), dupDismissed:false })}>${label}</button>`)}</div>
+      <span className="hint">Pilih salah satu, atau isi kategori dan deskripsi sendiri.</span>
+    </div>
+
+    <div className="field"><span className="flabel">Jenis laporan</span>
+      <div className="seg">${JENIS.map(j => html`<button key=${j} aria-pressed=${String(form.jenis === j)} onClick=${() => set({ jenis: j })}>${j}</button>`)}</div>
+    </div>
+
+    <div className="field"><label htmlFor="f-cat">Kategori <span className="req">*</span></label>
+      <select id="f-cat" className=${'select' + (e.cat ? ' invalid' : '')} value=${form.cat} onChange=${ev => set({ cat: ev.target.value, dupDismissed:false })}>
+        <option value="">Pilih kategori</option>${Object.entries(CATS).map(([k, c]) => html`<option key=${k} value=${k}>${c.name}</option>`)}
+      </select>
+      ${e.cat ? html`<span className="err">${e.cat}</span>` : team && html`<span className="hint">Diteruskan ke Tim ${team.name}</span>`}
+    </div>
+
+    ${dup && html`<div className="callout amber" role="status"><${Icon} name="alert" /><div className="stack" style=${{ gap:8 }}>
+      <div><b>Sudah dilaporkan.</b> ${dup.code} · ${dup.issue || CATS[dup.cat].name}, ${relTime(dup.createdAt)}. Status: <${Chip} status=${dup.status}>${statusText(dup)}<//>${dup.meToo ? ` · ${dup.meToo + 1} orang mengalami` : ''}</div>
+      <div className="row"><button className="btn btn-primary btn-sm" onClick=${() => meToo(dup.id)}><${Icon} name="thumb" size=${14} />Saya juga mengalami</button>
+      <button className="btn btn-secondary btn-sm" onClick=${() => set({ dupDismissed:true })}>Masalahnya berbeda</button></div>
+    </div></div>`}
+
+    <div className="field"><label htmlFor="f-desc">Deskripsi ${!form.issue && html`<span className="req">*</span>`}</label>
+      <textarea id="f-desc" className=${'textarea' + (e.desc ? ' invalid' : '')} placeholder="Mis. bilik paling ujung, sejak pagi." value=${form.desc} onChange=${ev => set({ desc: ev.target.value })}></textarea>
+      ${e.desc ? html`<span className="err">${e.desc}</span>` : html`<span className="hint">${form.issue ? 'Opsional, tambahkan detail posisi.' : 'Wajib jika tidak memilih masalah umum.'}</span>`}
+    </div>
+
+    <div className="field"><span className="flabel">Foto (maks 3)</span>
+      <div className="photos">
+        ${form.photos.map((p, i) => html`<div className="ph" key=${i}><img src=${p.url} alt=${'Foto ' + (i + 1)} /><button className="rm" aria-label="Hapus foto" onClick=${() => setForm(f => ({ ...f, photos: f.photos.filter((_, j) => j !== i) }))}><${Icon} name="x" size=${12} /></button></div>`)}
+        ${form.photos.length < 3 && html`<label className="ph add" htmlFor="f-photo"><${Icon} name="camera" size=${20} />Ambil foto</label>`}
+      </div>
+      <input id="f-photo" ref=${fileRef} type="file" accept="image/*" capture="environment" multiple hidden onChange=${onFiles} />
+      <div className="row"><span className="hint">${form.photos.length ? 'Dikompres otomatis · ' + fmtKB(form.photos.reduce((s, p) => s + p.size, 0)) + ' · tersimpan di Google Drive' : 'Dikompres otomatis ≤ 1 MB, disimpan di Google Drive kantor.'}</span>
+      ${form.photos.length < 3 && html`<button className="linkbtn" onClick=${() => setForm(f => ({ ...f, photos: [...f.photos, samplePhoto(f.issue || loc.name)] }))}>Pakai foto contoh</button>`}</div>
+    </div>
+
+    <div className="field"><span className="flabel">Pelapor</span>
+      ${!form.editId ? html`<div className="idbox"><div className="avatar">${initials(form.nama)}</div><div style=${{ flex:1, minWidth:0 }}><b>${form.nama}</b><div className="caption">${form.divisi} · ${form.wa}</div></div><button className="linkbtn" onClick=${() => set({ editId:true })}>Ubah</button></div>
+        <span className="hint">Diingat dari laporan sebelumnya di HP ini. Tanpa login.</span>`
+      : html`<div className="stack">
+        <div className="field"><label htmlFor="f-nama">Nama <span className="req">*</span></label><input id="f-nama" className=${'input' + (e.nama ? ' invalid' : '')} value=${form.nama} onChange=${ev => set({ nama: ev.target.value })} />${e.nama && html`<span className="err">${e.nama}</span>`}</div>
+        <div className="field"><label htmlFor="f-div">Divisi <span className="req">*</span></label><select id="f-div" className="select" value=${form.divisi} onChange=${ev => set({ divisi: ev.target.value })}>${DIVISI.map(d => html`<option key=${d}>${d}</option>`)}</select></div>
+        <div className="field"><label htmlFor="f-wa">No WhatsApp <span className="req">*</span></label><input id="f-wa" className=${'input' + (e.wa ? ' invalid' : '')} inputMode="tel" value=${form.wa} onChange=${ev => set({ wa: ev.target.value })} />${e.wa && html`<span className="err">${e.wa}</span>`}</div>
+      </div>`}
+      <div className="field"><label htmlFor="f-email">Email (opsional)</label><input id="f-email" className="input" inputMode="email" placeholder="Untuk kabar jadwal dan penyelesaian" value=${form.email} onChange=${ev => set({ email: ev.target.value })} /></div>
+    </div>
+
+    <button className="btn btn-primary btn-block" onClick=${submit}><${Icon} name="send" />Kirim laporan</button>
+    <p className="caption" style=${{ textAlign:'center' }}>Tidak ada pilihan urgensi. Prioritas dan SLA diatur oleh admin per kategori.</p>
+  <//>`;
+}
+
+function PhoneSuccess({ t }) {
+  const { setPhone, phone } = useApp();
+  const team = TEAMS[t.team];
+  return html`<div className="stack-lg" style=${{ textAlign:'center' }}>
+    <div className="bigcheck"><${Icon} name="check" size=${30} /></div>
+    <div className="stack" style=${{ gap:6 }}>
+      <h2 style=${{ fontSize:20, lineHeight:'28px', fontWeight:800 }}>${phone.metoo ? 'Dukungan tercatat' : 'Laporan terkirim'}</h2>
+      <p className="muted">${phone.metoo ? `Anda ditambahkan ke tiket yang sudah ada. Tim ${team.name} melihat bahwa ${t.meToo + 1} orang mengalami masalah ini.` : `Tim ${team.name} sudah menerima notifikasi lewat email dan Telegram.`}</p>
+    </div>
+    <div className="card card-b stack" style=${{ gap:6 }}>
+      <span className="caption">Kode tiket</span><span className="code num">${t.code}</span>
+      <span className="caption">${locLabel(LOC[t.loc])} · ${t.issue || CATS[t.cat].name}</span>
+    </div>
+    <${CopyLink} text=${`${DOMAIN}/t/${t.code}`} />
+    <div className="stack" style=${{ gap:8 }}>
+      <button className="btn btn-primary btn-block" onClick=${() => setPhone({ ...phone, screen:'status' })}>Lihat status</button>
+      <button className="btn btn-secondary btn-block" onClick=${() => setPhone({ screen:'scan', loc:null, ticketId:null })}>Lapor masalah lain</button>
+    </div>
+  </div>`;
+}
+
+function CopyLink({ text }) {
+  const [done, setDone] = useState(false);
+  const ref = useRef(null);
+  function copy() {
+    const ok = () => { setDone(true); setTimeout(() => setDone(false), 1500); };
+    try { navigator.clipboard.writeText('https://' + text).then(ok, () => select()); } catch (e) { select(); }
+  }
+  function select() { const r = document.createRange(); r.selectNodeContents(ref.current); const s = getSelection(); s.removeAllRanges(); s.addRange(r); }
+  return html`<div className="idbox" style=${{ textAlign:'left' }}><${Icon} name="lock" size=${14} className="muted" /><span ref=${ref} style=${{ flex:1, minWidth:0, fontSize:12, overflowWrap:'anywhere' }}>${text}</span>
+    <button className="btn btn-ghost btn-sm" onClick=${copy}><${Icon} name=${done ? 'check' : 'copy'} size=${14} />${done ? 'Tersalin' : 'Salin'}</button></div>`;
+}
+
+function PhoneStatus({ t }) {
+  const { confirm, reopen, db, setPhone, phone } = useApp();
+  const [mode, setMode] = useState(null); const [rating, setRating] = useState(5); const [fb, setFb] = useState(''); const [note, setNote] = useState('');
+  const loc = LOC[t.loc];
+  const firstAt = s => (t.events.find(e => e.to === s) || {}).at;
+  const order = ['BARU','DITERIMA','DIJADWALKAN','DIKERJAKAN','SELESAI'];
+  const reached = t.status === 'CLOSED' ? 4 : t.status === 'MENUNGGU' ? (t.waitReason === 'approval' ? 1 : 3) : order.indexOf(t.status);
+  const stages = [
+    ['Laporan terkirim', firstAt('BARU') && fmtDT(firstAt('BARU'))],
+    ['Diterima tim ' + TEAMS[t.team].name, firstAt('DITERIMA') && fmtDT(firstAt('DITERIMA'))],
+    ['Dijadwalkan', t.schedule ? `${fmtDay(t.schedule)}, ${fmtTime(t.schedule)}` : ''],
+    ['Dikerjakan', firstAt('DIKERJAKAN') && fmtDT(firstAt('DIKERJAKAN'))],
+    ['Selesai', firstAt('SELESAI') && fmtDT(firstAt('SELESAI'))],
+  ];
+  const parent = t.parent && db.tickets.find(x => x.id === t.parent);
+  const before = t.photos.filter(p => p.fase === 'before'), after = t.photos.filter(p => p.fase === 'after');
+  return html`<${React.Fragment}>
+    <div className="stack" style=${{ gap:6 }}>
+      <div className="row" style=${{ justifyContent:'space-between' }}><span className="code num" style=${{ fontSize:18 }}>${t.code}</span><${Chip} status=${t.status}>${statusText(t)}<//></div>
+      <b>${t.issue || CATS[t.cat].name}</b><span className="caption">${locLabel(loc)} · ${t.jenis}</span>
+      ${t.meToo > 0 && html`<span className="caption"><${Icon} name="users" size=${12} /> ${t.meToo + 1} orang melaporkan masalah ini</span>`}
+    </div>
+    ${t.status === 'DITOLAK' && html`<div className="callout red"><${Icon} name="info" /><div><b>Tidak dapat diproses.</b> ${t.rejectReason}</div></div>`}
+    ${t.status === 'DUPLIKAT' && parent && html`<div className="callout"><${Icon} name="info" /><div>Digabung ke <b>${parent.code}</b> karena masalahnya sama. <button className="linkbtn" onClick=${() => setPhone({ ...phone, ticketId: parent.id })}>Lihat tiket</button></div></div>`}
+    ${t.status === 'MENUNGGU' && html`<div className="callout amber"><${Icon} name="hourglass" /><div>${t.waitReason === 'approval' ? 'Perbaikan butuh biaya dan sedang menunggu persetujuan.' : 'Sedang menunggu suku cadang atau vendor.'}</div></div>`}
+    ${!['DITOLAK','DUPLIKAT'].includes(t.status) && html`<ol className="tl">${stages.map(([label, sub], i) => {
+      const cls = i <= reached ? 'ok' : i === reached + 1 ? 'now' : '';
+      return html`<li key=${label} className=${cls}><span className="d"><${Icon} name=${cls === 'ok' ? 'check' : 'clock'} size=${12} /></span><div><b>${label}</b><span className="caption">${sub || (cls === 'now' ? 'Sedang berlangsung' : 'Belum')}</span></div></li>`;
+    })}</ol>`}
+    ${(before.length > 0 || after.length > 0) && html`<div className="stack" style=${{ gap:6 }}>
+      ${before.length > 0 && html`<span className="caption">Foto laporan</span><div className="photos">${before.map((p, i) => html`<div className="ph" key=${i}><img src=${p.url} alt="Foto laporan" /></div>`)}</div>`}
+      ${after.length > 0 && html`<span className="caption">Foto sesudah perbaikan</span><div className="photos">${after.map((p, i) => html`<div className="ph" key=${i}><img src=${p.url} alt="Foto sesudah" /></div>`)}</div>`}
+    </div>`}
+    ${t.status === 'SELESAI' && html`<div className="card card-b stack">
+      <b>Apakah masalahnya sudah beres?</b>
+      <span className="caption">Tanpa jawaban, tiket otomatis Closed ${fmtDay(t.autoCloseAt)}.</span>
+      ${mode === null && html`<div className="grid2"><button className="btn btn-primary" onClick=${() => setMode('ok')}><${Icon} name="thumb" size=${14} />Sudah beres</button><button className="btn btn-secondary" onClick=${() => setMode('no')}>Belum</button></div>`}
+      ${mode === 'ok' && html`<div className="stack">
+        <div className="stars" role="group" aria-label="Penilaian">${[1,2,3,4,5].map(n => html`<button key=${n} aria-pressed=${String(n <= rating)} aria-label=${n + ' bintang'} onClick=${() => setRating(n)}><${Icon} name="star" size=${26} className=${n <= rating ? 'fill' : ''} /></button>`)}</div>
+        <textarea id="f-fb" className="textarea" placeholder="Masukan untuk tim (opsional)" value=${fb} onChange=${ev => setFb(ev.target.value)}></textarea>
+        <button className="btn btn-primary" onClick=${() => confirm(t.id, rating, fb)}>Kirim penilaian</button></div>`}
+      ${mode === 'no' && html`<div className="stack">
+        <textarea id="f-no" className="textarea" placeholder="Apa yang masih bermasalah?" value=${note} onChange=${ev => setNote(ev.target.value)}></textarea>
+        <button className="btn btn-primary" onClick=${() => { reopen(t.id, note); setMode(null); }}>Kirim ke tim</button></div>`}
+    </div>`}
+    ${t.status === 'CLOSED' && html`<div className="callout emerald"><${Icon} name="checkc" /><div><b>Tiket ditutup.</b> ${t.rating ? `Penilaian Anda ${t.rating}/5. Terima kasih.` : 'Ditutup otomatis setelah 3 hari kerja.'}</div></div>`}
+    <${CopyLink} text=${`${DOMAIN}/t/${t.code}`} />
+  <//>`;
+}
+
+function PhoneMine() {
+  const { db, setPhone } = useApp();
+  const list = db.tickets.filter(t => t.mine).sort((a, b) => b.createdAt - a.createdAt);
+  return html`<${React.Fragment}>
+    <div><h2 style=${{ fontSize:18, lineHeight:'24px', fontWeight:800 }}>Laporan saya</h2><span className="caption">Tersimpan di HP ini, tanpa login.</span></div>
+    ${list.length === 0 && html`<div className="empty"><div className="ei"><${Icon} name="list" /></div>Belum ada laporan.</div>`}
+    ${list.map(t => html`<button key=${t.id} className="ticketcard" onClick=${() => setPhone({ screen:'status', loc:t.loc, ticketId:t.id })}>
+      <div className="row" style=${{ justifyContent:'space-between', width:'100%' }}><span className="caption num">${t.code}</span><${Chip} status=${t.status}>${statusText(t)}<//></div>
+      <b>${t.issue || CATS[t.cat].name}</b><span className="caption">${locLabel(LOC[t.loc])} · ${relTime(t.createdAt)}</span>
+    </button>`)}
+  <//>`;
+}
+
+/* ================= NOTIFIKASI ================= */
+function Notifs() {
+  const { db } = useApp();
+  const [f, setF] = useState('all');
+  const list = db.notifs.filter(n => f === 'all' || n.ch === f);
+  const cnt = ch => db.notifs.filter(n => n.ch === ch).length;
+  return html`<div className="card">
+    <div className="card-h" style=${{ flexWrap:'wrap' }}><h2>Notifikasi terkirim</h2><span className="count">${db.notifs.length}</span></div>
+    <div className="card-b stack" style=${{ padding:12 }}>
+      <div className="tabs" role="tablist">${[['all','Semua',db.notifs.length],['email','Email',cnt('email')],['tg','Telegram',cnt('tg')]].map(([k, l, c]) => html`<button key=${k} role="tab" className="tab" aria-selected=${String(f === k)} onClick=${() => setF(k)}>${l}<span className="count">${c}</span></button>`)}</div>
+      <p className="note"><${Icon} name="info" size=${14} />Email ke ${OPS_EMAIL}. Telegram ke grup tim sesuai kategori. WhatsApp menyusul di fase 2.</p>
+      <div className="nlist">${list.map((n, i) => html`<${NotifCard} key=${n.id} n=${n} open=${i === 0} />`)}</div>
+    </div>
+  </div>`;
+}
+
+function NotifCard({ n, open }) {
+  const { db, act, openTicket } = useApp();
+  const [exp, setExp] = useState(open);
+  useEffect(() => { if (open) setExp(true); }, [open]);
+  const t = db.tickets.find(x => x.id === n.ticketId);
+  const can = a => t && ((a === 'accept' || a === 'take') ? t.status === 'BARU' : (a === 'approve' || a === 'deny') ? t.approval === 'pending' : true);
+  const doneLabel = a => {
+    if (!t) return '';
+    if (a === 'accept' || a === 'take') { const ev = t.events.find(e => e.to === 'DITERIMA'); return ev ? 'Diterima ' + ev.actor.split(' (')[0] : '—'; }
+    if (a === 'approve' || a === 'deny') return t.approval === 'approved' ? 'Disetujui' : t.approval === 'denied' ? 'Ditolak' : '—';
+    return '';
+  };
+  return html`<article className=${'notif' + (n.fresh ? ' fresh' : '')}>
+    <button className="nhead" onClick=${() => setExp(!exp)} aria-expanded=${String(exp)}>
+      <span className=${'chan ' + (n.ch === 'email' ? 'email' : 'tg')}><${Icon} name=${n.ch === 'email' ? 'mail' : 'msg'} size=${15} /></span>
+      <span className="t"><b>${n.ch === 'email' ? n.subject : n.title}</b><span className="caption">${n.ch === 'email' ? 'Email' : 'Telegram'} · ${n.to} · ${fmtTime(n.at)}</span></span>
+      <${Icon} name=${exp ? 'left' : 'right'} size=${14} className="muted" />
+    </button>
+    ${exp && html`<div className="nbody">${n.ch === 'email' ? html`<div className="mail">
+        <div className="mh">Dari <b>Tiket Fasilitas HQ</b> ${'<noreply@apotekalpro.id>'}<br />Kepada <b>${n.to}</b></div>
+        <div className="mb"><div className="brandbar"><div className="logo sm"><img src=${LOGO} alt="" /></div>Tiket Fasilitas HQ</div>
+          <p style=${{ fontSize:12, lineHeight:'18px' }}>${n.intro}</p>
+          <dl className="kv">${n.fields.map(([k, v]) => html`<${React.Fragment} key=${k}><dt>${k}</dt><dd>${v}</dd><//>`)}</dl>
+          ${t && html`<button className="btn btn-primary btn-sm" style=${{ alignSelf:'flex-start' }} onClick=${() => openTicket(t.id)}>${n.cta}</button>`}
+        </div></div>`
+      : html`<div className="tgwrap"><div className="bubble"><div className="bot">Alpro Fasilitas Bot</div><b>${n.title}</b><p>${n.text}</p></div>
+        ${n.buttons.length > 0 && html`<div className="tgbtns">${n.buttons.map(b => html`<button key=${b.act} disabled=${!can(b.act)} onClick=${() => act.fromTelegram(t.id, b.act)}>${can(b.act) ? b.label : doneLabel(b.act)}</button>`)}
+          <button style=${{ gridColumn:'1 / -1' }} onClick=${() => t && openTicket(t.id)}>Buka di panel admin</button></div>`}
+      </div>`}</div>`}
+  </article>`;
+}
+
+/* ================= ADMIN ================= */
+function Admin() {
+  const { adminTab, setAdminTab, selId, db } = useApp();
+  const sel = db.tickets.find(t => t.id === selId);
+  const tabs = [['dash','Dashboard','dash'],['tiket','Tiket','kanban'],['qr','Stiker QR','printer'],['atur','Routing & aturan','settings']];
+  return html`<div className="card">
+    <div className="adminbar">
+      <div className="tabs" role="tablist">${tabs.map(([k, l, ic]) => html`<button key=${k} role="tab" className="tab" aria-selected=${String(adminTab === k)} onClick=${() => setAdminTab(k)}><${Icon} name=${ic} size=${14} />${l}${k === 'tiket' && html`<span className="count">${db.tickets.filter(t => OPEN.includes(t.status)).length}</span>`}</button>`)}</div>
+      <div className="who"><div className="avatar" style=${{ width:28, height:28, fontSize:11 }}>BU</div>Budi · Admin GA</div>
+    </div>
+    <div className="abody">
+      ${adminTab === 'dash' && html`<${Dashboard} />`}
+      ${adminTab === 'tiket' && (sel ? html`<${Detail} key=${sel.id} t=${sel} />` : html`<${Kanban} />`)}
+      ${adminTab === 'qr' && html`<${Stickers} />`}
+      ${adminTab === 'atur' && html`<${Rules} />`}
+    </div>
+  </div>`;
+}
+
+function Dashboard() {
+  const { db, openTicket } = useApp();
+  const T = db.tickets;
+  const open = T.filter(t => OPEN.includes(t.status));
+  const resp = T.map(t => { const a = t.events.find(e => e.to === 'BARU'), b = t.events.find(e => e.to === 'DITERIMA'); return a && b ? workHoursBetween(a.at, b.at) : null; }).filter(x => x !== null);
+  const avgResp = resp.length ? resp.reduce((s, x) => s + x, 0) / resp.length : 0;
+  const rated = T.filter(t => t.rating); const avgRating = rated.length ? rated.reduce((s, t) => s + t.rating, 0) / rated.length : 0;
+  const cost = T.filter(t => t.approval !== 'denied' && !['DITOLAK','DUPLIKAT'].includes(t.status)).reduce((s, t) => s + (t.cost || 0), 0);
+  const pending = T.filter(t => t.approval === 'pending');
+  const byCat = Object.entries(CATS).map(([k, c]) => [k, c, T.filter(t => t.cat === k).length]).filter(x => x[2] > 0).sort((a, b) => b[2] - a[2]);
+  const maxCat = Math.max(1, ...byCat.map(x => x[2]));
+  const byLoc = LOCS.map(l => [l, T.filter(t => t.loc === l.code).reduce((s, t) => s + 1 + t.meToo, 0)]).filter(x => x[1] > 0).sort((a, b) => b[1] - a[1]).slice(0, 5);
+  return html`<${React.Fragment}>
+    <div className="kpis">
+      <div className="kpi"><span className="l">Tiket terbuka</span><span className="v">${open.length}</span></div>
+      <div className=${'kpi' + (T.some(t => t.status === 'BARU') ? ' alert' : '')}><span className="l">Belum diterima</span><span className="v">${T.filter(t => t.status === 'BARU').length}</span></div>
+      <div className=${'kpi' + (pending.length ? ' alert' : '')}><span className="l">Menunggu approval</span><span className="v">${pending.length}</span></div>
+      <div className="kpi"><span className="l">Rata-rata respon</span><span className="v">${avgResp.toFixed(1)}<small style=${{ fontSize:13, fontWeight:600 }}> jam kerja</small></span></div>
+      <div className="kpi"><span className="l">Kepuasan pelapor</span><span className="v">${avgRating.toFixed(1)}<small style=${{ fontSize:13, fontWeight:600 }}> / 5</small></span></div>
+      <div className="kpi"><span className="l">Biaya perbaikan</span><span className="v" style=${{ fontSize:20 }}>${fmtRp(cost)}</span></div>
+    </div>
+    ${pending.length > 0 && html`<div className="callout amber"><${Icon} name="shield" /><div style=${{ flex:1 }}><b>${pending.length} biaya menunggu persetujuan ${OPS}.</b> ${pending.map(t => html`<button key=${t.id} className="linkbtn" style=${{ marginLeft:6 }} onClick=${() => openTicket(t.id)}>${t.code} · ${fmtRp(t.cost)}</button>`)}</div></div>`}
+    <div className="two">
+      <section className="panel"><h3>Tiket per kategori</h3>
+        <div className="bars">${byCat.map(([k, c, n]) => html`<div className="bar" key=${k}><span>${c.name}</span><div className="track"><div className=${'fillb ' + c.team} style=${{ width: (n / maxCat * 100) + '%' }}></div></div><span className="num" style=${{ textAlign:'right', fontWeight:700 }}>${n}</span></div>`)}</div>
+        <div className="legend"><span><i style=${{ background:'var(--brand-500)' }}></i>GA</span><span><i style=${{ background:'var(--violet-text)' }}></i>IT</span><span><i style=${{ background:'var(--sky-text)' }}></i>Housekeeping</span></div>
+      </section>
+      <section className="panel"><h3>Lokasi paling sering dilaporkan</h3>
+        <div className="tablewrap"><table><thead><tr><th>Lokasi</th><th style=${{ textAlign:'right' }}>Laporan</th></tr></thead><tbody>
+          ${byLoc.map(([l, n]) => html`<tr key=${l.code}><td>${locLabel(l)}</td><td className="num" style=${{ textAlign:'right', fontWeight:700 }}>${n}</td></tr>`)}
+        </tbody></table></div>
+        <span className="caption">Termasuk "Saya juga mengalami".</span>
+      </section>
+    </div>
+    <section className="panel"><h3>Alur status tiket</h3>
+      <div className="sflow">${['BARU','DITERIMA','DIJADWALKAN','DIKERJAKAN','SELESAI','CLOSED'].map((s, i) => html`<${React.Fragment} key=${s}>${i > 0 && html`<${Icon} name="arrow" size=${14} />`}<${Chip} status=${s} /><//>`)}</div>
+      <span className="caption">Cabang: Dikerjakan ⇄ Menunggu (part/vendor/approval) · Pelapor "Belum beres" kembali ke Dikerjakan · Ditolak (alasan wajib) · Duplikat (digabung ke tiket induk). Selesai tanpa respons ${AUTO_CLOSE_DAYS} hari kerja otomatis Closed.</span>
+    </section>
+    <p className="note"><${Icon} name="info" size=${14} />Semua angka dari data contoh prototype.</p>
+  <//>`;
+}
+
+function Kanban() {
+  const { db, openTicket, demoId } = useApp();
+  const [team, setTeam] = useState('all');
+  const cols = [['BARU'],['DITERIMA'],['DIJADWALKAN'],['DIKERJAKAN'],['MENUNGGU'],['SELESAI'],['CLOSED'],['DITOLAK','DUPLIKAT']];
+  const T = db.tickets.filter(t => team === 'all' || t.team === team);
+  return html`<${React.Fragment}>
+    <div className="row" style=${{ justifyContent:'space-between' }}>
+      <div className="tabs">${[['all','Semua tim'],['ga','GA'],['it','IT'],['hk','Housekeeping']].map(([k, l]) => html`<button key=${k} className="tab" aria-selected=${String(team === k)} onClick=${() => setTeam(k)}>${l}<span className="count">${(k === 'all' ? db.tickets : db.tickets.filter(t => t.team === k)).filter(t => OPEN.includes(t.status)).length}</span></button>`)}</div>
+      <span className="caption">Klik kartu untuk membuka detail</span>
+    </div>
+    <div className="kanban">${cols.map(c => {
+      const items = T.filter(t => c.includes(t.status)).sort((a, b) => b.createdAt - a.createdAt);
+      return html`<section className="kcol" key=${c[0]}><header><${Chip} status=${c[0]}>${c.length > 1 ? 'Ditolak/Duplikat' : ST[c[0]].label}<//><span className="count">${items.length}</span></header>
+        ${items.length === 0 && html`<div className="kempty">Kosong</div>`}
+        ${items.map(t => html`<button key=${t.id} className=${'kcard' + (t.id === demoId ? ' demo' : '')} onClick=${() => openTicket(t.id)}>
+          <span className="c num">${t.code}</span><b>${t.issue || CATS[t.cat].name}</b><span className="caption">${locLabel(LOC[t.loc])}</span>
+          <div className="row" style=${{ gap:6 }}><span className="chip">${TEAMS[t.team].name}</span>
+            ${t.meToo > 0 && html`<span className="chip brand"><${Icon} name="users" size=${11} />${t.meToo + 1}</span>`}
+            ${t.approval === 'pending' && html`<span className="chip amber">Approval</span>`}
+            <span className="caption">${relTime(t.createdAt)}</span></div>
+        </button>`)}
+      </section>`;
+    })}</div>
+  <//>`;
+}
+
+function Detail({ t }) {
+  const { act, setSelId, db } = useApp();
+  const loc = LOC[t.loc], cat = CATS[t.cat], team = TEAMS[t.team];
+  const [assignee, setAssignee] = useState(t.assignee || team.staff[0]);
+  const [newTeam, setNewTeam] = useState(t.team);
+  const [rej, setRej] = useState(null);
+  const [dupOf, setDupOf] = useState('');
+  const [sch, setSch] = useState({ when: toInput(t.schedule || nextWorkSlot(Date.now(), 10)), exec: t.exec || 'internal', who: t.assignee || team.staff[0], vendor: t.vendor || '', cost: t.cost || 0 });
+  const [after, setAfter] = useState(null); const [doneNote, setDoneNote] = useState(''); const [hold, setHold] = useState('');
+  const fileRef = useRef(null);
+  const before = t.photos.filter(p => p.fase === 'before'), afterPh = t.photos.filter(p => p.fase === 'after');
+  const dupCands = db.tickets.filter(x => x.id !== t.id && x.loc === t.loc && OPEN.includes(x.status));
+  const overThreshold = Number(sch.cost) > THRESHOLD;
+  async function onAfter(ev) { const f = ev.target.files[0]; if (f) { try { setAfter(await compressFile(f)); } catch (e) {} } ev.target.value = ''; }
+
+  return html`<${React.Fragment}>
+    <div className="dhead">
+      <button className="btn btn-ghost btn-sm" onClick=${() => setSelId(null)}><${Icon} name="left" size=${14} />Semua tiket</button>
+    </div>
+    <div className="dhead">
+      <div style=${{ flex:1, minWidth:0 }}><span className="caption num">${t.code} · dibuat ${fmtDT(t.createdAt)}</span><h2>${t.issue || cat.name}</h2><span className="muted">${locLabel(loc)}</span></div>
+      <div className="row"><${Chip} status=${t.status}>${statusText(t)}<//><span className="chip">${team.name}</span>${t.meToo > 0 && html`<span className="chip brand"><${Icon} name="users" size=${11} />${t.meToo + 1} pelapor</span>`}</div>
+    </div>
+    <div className="dgrid">
+      <div className="stack-lg">
+        <dl className="facts">
+          <dt>Jenis</dt><dd>${t.jenis}</dd><dt>Kategori</dt><dd>${cat.name}</dd><dt>Deskripsi</dt><dd>${t.desc || '-'}</dd>
+          <dt>Pelapor</dt><dd>${t.reporter.nama} · ${t.reporter.divisi}</dd><dt>WhatsApp</dt><dd className="num">${t.reporter.wa}</dd>
+          ${t.assignee && html`<${React.Fragment}><dt>Pelaksana</dt><dd>${t.exec === 'vendor' ? t.vendor + ' (vendor)' : t.assignee}</dd><//>`}
+          ${t.schedule && html`<${React.Fragment}><dt>Jadwal</dt><dd>${fmtDay(t.schedule)}, ${fmtTime(t.schedule)}</dd><//>`}
+          ${t.cost > 0 && html`<${React.Fragment}><dt>Biaya</dt><dd className="num">${fmtRp(t.cost)}${t.approval ? ' · ' + ({ pending:'menunggu approval', approved:'disetujui', denied:'ditolak' })[t.approval] : ''}</dd><//>`}
+          ${t.rating && html`<${React.Fragment}><dt>Penilaian</dt><dd>${t.rating}/5${t.feedback ? ' · "' + t.feedback + '"' : ''}</dd><//>`}
+          ${t.rejectReason && html`<${React.Fragment}><dt>Alasan tolak</dt><dd>${t.rejectReason}</dd><//>`}
+        </dl>
+        <div className="stack" style=${{ gap:6 }}><span className="caption">Foto laporan (Google Drive)</span><div className="photos">${before.map((p, i) => html`<div className="ph" key=${i}><img src=${p.url} alt="Foto laporan" /></div>`)}${before.length === 0 && html`<span className="caption">Tidak ada foto</span>`}</div>
+          ${afterPh.length > 0 && html`<span className="caption">Foto sesudah</span><div className="photos">${afterPh.map((p, i) => html`<div className="ph" key=${i}><img src=${p.url} alt="Foto sesudah" /></div>`)}</div>`}</div>
+
+        ${t.status === 'BARU' && html`<div className="actions"><h3><${Icon} name="bell" />Tindak lanjut</h3>
+          <div className="grid2">
+            <div className="field"><label htmlFor="d-team">Tim</label><select id="d-team" className="select" value=${newTeam} onChange=${e => setNewTeam(e.target.value)}>${Object.entries(TEAMS).map(([k, v]) => html`<option key=${k} value=${k}>${v.name}</option>`)}</select></div>
+            <div className="field"><label htmlFor="d-who">Pelaksana</label><select id="d-who" className="select" value=${assignee} onChange=${e => setAssignee(e.target.value)} disabled=${newTeam !== t.team}>${team.staff.map(s => html`<option key=${s}>${s}</option>`)}</select></div>
+          </div>
+          ${newTeam !== t.team ? html`<button className="btn btn-primary" onClick=${() => act.reassign(t.id, newTeam)}>Alihkan ke Tim ${TEAMS[newTeam].name}</button>`
+          : html`<div className="row"><button className="btn btn-primary" onClick=${() => act.accept(t.id, assignee)}><${Icon} name="check" />Terima</button>
+            <button className="btn btn-secondary" onClick=${() => setRej(rej === null ? '' : null)}>Tolak</button>
+            ${dupCands.length > 0 && html`<button className="btn btn-secondary" onClick=${() => setDupOf(dupOf ? '' : dupCands[0].id)}>Tandai duplikat</button>`}</div>`}
+          ${rej !== null && html`<div className="field"><label htmlFor="d-rej">Alasan penolakan <span className="req">*</span></label><textarea id="d-rej" className="textarea" value=${rej} onChange=${e => setRej(e.target.value)} placeholder="Wajib diisi, dikirim ke pelapor"></textarea>
+            <button className="btn btn-danger" disabled=${rej.trim().length < 5} onClick=${() => act.reject(t.id, rej.trim())}>Tolak tiket</button></div>`}
+          ${dupOf && html`<div className="field"><label htmlFor="d-dup">Gabungkan ke</label><select id="d-dup" className="select" value=${dupOf} onChange=${e => setDupOf(e.target.value)}>${dupCands.map(x => html`<option key=${x.id} value=${x.id}>${x.code} · ${x.issue || CATS[x.cat].name}</option>`)}</select>
+            <button className="btn btn-primary" onClick=${() => act.duplicate(t.id, dupOf)}>Gabungkan</button></div>`}
+        </div>`}
+
+        ${t.status === 'DITERIMA' && html`<div className="actions"><h3><${Icon} name="calendar" />Jadwalkan perbaikan</h3>
+          <div className="field"><label htmlFor="d-when">Waktu</label><input id="d-when" type="datetime-local" className="input" value=${sch.when} onChange=${e => setSch({ ...sch, when: e.target.value })} /><span className="hint">Jam kerja HQ Senin–Jumat 09.00–16.00</span></div>
+          <div className="field"><span className="flabel">Dikerjakan oleh</span><div className="radio">${[['internal','Internal'],['vendor','Vendor']].map(([k, l]) => html`<button key=${k} aria-pressed=${String(sch.exec === k)} onClick=${() => setSch({ ...sch, exec: k })}>${l}</button>`)}</div></div>
+          ${sch.exec === 'internal' ? html`<div className="field"><label htmlFor="d-tech">Teknisi</label><select id="d-tech" className="select" value=${sch.who} onChange=${e => setSch({ ...sch, who: e.target.value })}>${team.staff.map(s => html`<option key=${s}>${s}</option>`)}</select></div>`
+            : html`<div className="field"><label htmlFor="d-vendor">Nama vendor</label><input id="d-vendor" className="input" value=${sch.vendor} onChange=${e => setSch({ ...sch, vendor: e.target.value })} placeholder="Mis. CV Sejuk Teknik" /></div>`}
+          <div className="field"><label htmlFor="d-cost">Estimasi biaya (Rp)</label><input id="d-cost" type="number" min="0" step="50000" className="input num" value=${sch.cost} onChange=${e => setSch({ ...sch, cost: e.target.value })} />
+            <span className=${overThreshold ? 'err' : 'hint'}>${overThreshold ? `Di atas ${fmtRp(THRESHOLD)}: perlu persetujuan ${OPS} sebelum dijadwalkan.` : `Ambang approval ${fmtRp(THRESHOLD)} (usulan, menunggu konfirmasi).`}</span></div>
+          <div className="row"><button className="btn btn-primary" disabled=${sch.exec === 'vendor' && !sch.vendor.trim()} onClick=${() => act.schedule(t.id, { ...sch, when: new Date(sch.when).getTime(), cost: Number(sch.cost) || 0 })}>${overThreshold ? 'Ajukan approval' : 'Jadwalkan'}</button>
+            <button className="btn btn-secondary" onClick=${() => setSch({ ...sch, cost: 2400000, exec: 'vendor', vendor: sch.vendor || 'PT Servis Elektronik Jaya' })}>Coba biaya Rp 2,4 jt</button></div>
+        </div>`}
+
+        ${t.status === 'MENUNGGU' && t.approval === 'pending' && html`<div className="actions"><h3><${Icon} name="shield" />Persetujuan biaya · ${OPS}</h3>
+          <p>${t.vendor || 'Internal'} · estimasi <b className="num">${fmtRp(t.cost)}</b> untuk ${t.issue || cat.name}.</p>
+          <div className="row"><button className="btn btn-primary" onClick=${() => act.approve(t.id)}>Setujui</button><button className="btn btn-secondary" onClick=${() => act.deny(t.id)}>Tolak biaya</button></div>
+          <span className="caption">Di aplikasi asli, tombol ini hanya tampil untuk akun Ops Manager.</span>
+        </div>`}
+
+        ${t.status === 'MENUNGGU' && t.waitReason === 'part' && html`<div className="actions"><h3><${Icon} name="hourglass" />Menunggu part/vendor</h3>
+          <button className="btn btn-primary" onClick=${() => act.resume(t.id)}>Lanjutkan pekerjaan</button></div>`}
+
+        ${t.status === 'DIJADWALKAN' && html`<div className="actions"><h3><${Icon} name="wrench" />Hari pengerjaan</h3>
+          <p>${fmtDay(t.schedule)}, ${fmtTime(t.schedule)} · ${t.exec === 'vendor' ? t.vendor : t.assignee}</p>
+          <button className="btn btn-primary" onClick=${() => act.start(t.id)}>Mulai dikerjakan</button></div>`}
+
+        ${t.status === 'DIKERJAKAN' && html`<div className="actions"><h3><${Icon} name="camera" />Selesaikan pekerjaan</h3>
+          <div className="field"><span className="flabel">Foto sesudah <span className="req">*</span></span>
+            <div className="photos">${after ? html`<div className="ph"><img src=${after.url} alt="Foto sesudah" /><button className="rm" aria-label="Hapus" onClick=${() => setAfter(null)}><${Icon} name="x" size=${12} /></button></div>` : html`<label className="ph add" htmlFor="d-after"><${Icon} name="camera" size=${20} />Unggah</label>`}</div>
+            <input id="d-after" ref=${fileRef} type="file" accept="image/*" hidden onChange=${onAfter} />
+            ${!after && html`<button className="linkbtn" style=${{ alignSelf:'flex-start' }} onClick=${() => setAfter(samplePhoto('Sudah diperbaiki', true))}>Pakai foto contoh</button>`}</div>
+          <div className="field"><label htmlFor="d-note">Catatan pekerjaan</label><input id="d-note" className="input" value=${doneNote} onChange=${e => setDoneNote(e.target.value)} placeholder="Mis. ganti karet keran" /></div>
+          <div className="row"><button className="btn btn-primary" disabled=${!after} onClick=${() => act.finish(t.id, after, doneNote)}>Tandai selesai</button>
+            <button className="btn btn-secondary" onClick=${() => act.hold(t.id)}>Tunda: menunggu part</button></div>
+          ${!after && html`<span className="caption">Tombol aktif setelah foto sesudah diunggah.</span>`}
+        </div>`}
+
+        ${t.status === 'SELESAI' && html`<div className="actions"><h3><${Icon} name="clock" />Menunggu konfirmasi pelapor</h3>
+          <p>Otomatis Closed ${fmtDay(t.autoCloseAt)} jika pelapor tidak merespons.</p>
+          <button className="btn btn-secondary" onClick=${() => act.autoClose(t.id)}>Simulasikan ${AUTO_CLOSE_DAYS} hari kerja berlalu</button></div>`}
+      </div>
+      <section className="panel"><h3><${Icon} name="history" size=${14} /> Riwayat (audit trail)</h3>
+        <ol className="audit">${[...t.events].reverse().map((e, i) => html`<li key=${i}><time>${fmtDT(e.at)}</time><div><b>${e.actor}</b><div className="muted">${e.text}${e.to && e.from ? ` (${ST[e.from].label} → ${ST[e.to].label})` : ''}</div></div></li>`)}</ol>
+      </section>
+    </div>
+  <//>`;
+}
+
+function Stickers() {
+  const { scan } = useApp();
+  const [fl, setFl] = useState(0);
+  const list = LOCS.filter(l => !fl || l.floor === fl);
+  return html`<${React.Fragment}>
+    <div className="row" style=${{ justifyContent:'space-between' }}>
+      <div className="tabs">${[0,1,2,3,4].map(f => html`<button key=${f} className="tab" aria-selected=${String(fl === f)} onClick=${() => setFl(f)}>${f ? 'Lantai ' + f : 'Semua'}<span className="count">${f ? LOCS.filter(l => l.floor === f).length : LOCS.length}</span></button>`)}</div>
+      <span className="caption">Klik stiker untuk simulasi scan di HP</span>
+    </div>
+    <div className="stickers">${list.map(l => html`<button key=${l.code} className="sticker" onClick=${() => scan(l.code)} aria-label=${'Simulasi scan ' + locLabel(l)}>
+      <span className="top"><span className="logo sm" style=${{ width:22, height:22 }}><img src=${LOGO} alt="" /></span>Lapor Fasilitas</span>
+      <${QR} text=${`https://${DOMAIN}/r/${l.code}`} size=${116} />
+      <div className="bot"><b>${l.name}</b><span>Lantai ${l.floor} · ${l.code}</span><br /><span>Scan untuk lapor kerusakan atau kebutuhan</span></div>
+    </button>`)}</div>
+    <p className="note"><${Icon} name="info" size=${14} />QR berisi URL usulan https://${DOMAIN}/r/[kode], aktif setelah domain dipasang. Di aplikasi final, stiker diunduh sebagai PDF A4 siap cetak (vinyl tahan air).</p>
+  <//>`;
+}
+
+function Rules() {
+  return html`<${React.Fragment}>
+    <section className="panel"><h3>Routing kategori ke tim</h3>
+      <div className="tablewrap"><table><thead><tr><th>Kategori</th><th>Tim</th><th>Telegram</th><th>Email</th><th>Target SLA</th></tr></thead><tbody>
+        ${Object.entries(CATS).map(([k, c]) => html`<tr key=${k}><td>${c.name}</td><td><span className="chip">${TEAMS[c.team].name}</span></td><td>${TEAMS[c.team].group}</td><td>${OPS_EMAIL}</td><td className="muted">Belum diatur</td></tr>`)}
+      </tbody></table></div>
+    </section>
+    <div className="two">
+      <section className="panel"><h3>Aturan</h3>
+        <dl className="facts">
+          <dt>Jam kerja</dt><dd>Senin–Jumat, 09.00–16.00</dd>
+          <dt>Approval biaya</dt><dd>> ${fmtRp(THRESHOLD)} oleh ${OPS} (usulan)</dd>
+          <dt>Auto-close</dt><dd>${AUTO_CLOSE_DAYS} hari kerja setelah Selesai</dd>
+          <dt>Urgensi</dt><dd>Tidak dipilih pelapor</dd>
+          <dt>SLA & eskalasi</dt><dd>Nonaktif sampai target per kategori dikonfirmasi</dd>
+        </dl>
+      </section>
+      <section className="panel"><h3>Tim & pelaksana</h3>
+        <dl className="facts">${Object.values(TEAMS).map(v => html`<${React.Fragment} key=${v.name}><dt>${v.name}</dt><dd>Admin ${v.admin} · ${v.staff.join(', ')}</dd><//>`)}</dl>
+        <span className="caption">Nama tim dan pelaksana adalah contoh.</span>
+      </section>
+    </div>
+  <//>`;
+}
+
+/* ================= STEPPER & PEMANDU ================= */
+const STEPS = [['Scan QR','scan','Stiker per lokasi'],['Isi form','form','Lokasi otomatis'],['Submit','send','Kode tiket'],['Email + Telegram','bell','Ke admin & tim'],['FU & jadwal','calendar','Admin tindak lanjut'],['Closed','checkc','Konfirmasi pelapor']];
+
+function Flow() {
+  const { stepInfo, demoNext, resetDemo } = useApp();
+  const { step, allDone, title, text, action } = stepInfo;
+  return html`<section className="card flow" aria-label="Alur proses">
+    <ol className="steps">${STEPS.map(([label, ic, sub], i) => {
+      const n = i + 1; const cls = allDone || n < step ? 'done' : n === step ? 'current' : 'todo';
+      return html`<li key=${label} className=${'step ' + cls} aria-current=${cls === 'current' ? 'step' : undefined}><span className="dot"><${Icon} name=${cls === 'done' ? 'check' : ic} size=${18} /></span><b>${label}</b><span>${sub}</span></li>`;
+    })}</ol>
+    <div className="guide">
+      <span className="eyebrow">${allDone ? 'Selesai' : `Langkah ${step} dari 6`} · ${title}</span>
+      <p>${text}</p>
+      <div className="row"><button className="btn btn-primary" onClick=${demoNext}><${Icon} name=${allDone ? 'reset' : 'play'} size=${14} />${action}</button>
+        ${!allDone && html`<button className="btn btn-ghost btn-sm" onClick=${resetDemo}>Mulai ulang</button>`}</div>
+    </div>
+  </section>`;
+}
+
+/* ================= APP ================= */
+function App() {
+  const [db, setDb] = useState(seed);
+  const [theme, setTheme] = useState(() => { try { return localStorage.getItem('tiket-tema') || 'system'; } catch (e) { return 'system'; } });
+  const [view, setView] = useState('pelapor');
+  const [right, setRight] = useState('admin');
+  const [phone, setPhone] = useState({ screen:'scan', loc:null, ticketId:null });
+  const [form, setForm] = useState(emptyForm);
+  const [adminTab, setAdminTab] = useState('tiket');
+  const [selId, setSelId] = useState(null);
+  const [demoId, setDemoId] = useState(null);
+  const [toast, setToast] = useState(null);
+  const seqRef = useRef(12);
+  const toastTimer = useRef(null);
+
+  useEffect(() => {
+    const el = document.documentElement;
+    if (theme === 'system') el.removeAttribute('data-theme'); else el.setAttribute('data-theme', theme);
+    try { localStorage.setItem('tiket-tema', theme); } catch (e) {}
+  }, [theme]);
+  useEffect(() => { const id = setTimeout(() => setDb(d => d.notifs.some(n => n.fresh) ? { ...d, notifs: d.notifs.map(n => n.fresh ? { ...n, fresh:false } : n) } : d), 6000); return () => clearTimeout(id); }, [db.notifs]);
+
+  function say(msg) { setToast(msg); clearTimeout(toastTimer.current); toastTimer.current = setTimeout(() => setToast(null), 3200); }
+  function show(panel) { setView(panel); if (panel !== 'pelapor') setRight(panel); }
+  function update(id, fn) {
+    setDb(prev => {
+      const tickets = prev.tickets.map(t => t.id === id ? { ...t, events:[...t.events], photos:[...t.photos] } : t);
+      const t = tickets.find(x => x.id === id); const out = fn(t, tickets) || [];
+      return { tickets, notifs: [...out, ...prev.notifs] };
+    });
+  }
+  const ev = (t, actor, text, to) => { t.events.push({ at: Date.now(), actor, text, from: to ? t.status : null, to: to || null }); if (to) t.status = to; };
+
+  const act = {
+    accept(id, who) { update(id, t => { const by = adminOf(t.team); t.assignee = who || t.assignee || TEAMS[t.team].staff[0]; ev(t, by, `Tiket diterima, pelaksana ${t.assignee}`, 'DITERIMA'); return makeNotifs('accepted', t, { by: TEAMS[t.team].admin }); }); say('Tiket diterima'); },
+    fromTelegram(id, a) {
+      if (a === 'approve') return act.approve(id); if (a === 'deny') return act.deny(id);
+      update(id, t => { const by = adminOf(t.team); t.assignee = t.assignee || TEAMS[t.team].staff[0]; ev(t, by, a === 'take' ? `Diambil lewat Telegram, pelaksana ${t.assignee}` : `Diterima lewat Telegram, pelaksana ${t.assignee}`, 'DITERIMA'); return makeNotifs('accepted', t, { by: TEAMS[t.team].admin }); });
+      setSelId(id); setAdminTab('tiket'); say('Diterima dari Telegram');
+    },
+    reassign(id, team) { update(id, t => { const from = TEAMS[t.team].name; ev(t, adminOf(t.team), `Dialihkan dari Tim ${from} ke Tim ${TEAMS[team].name}`); t.team = team; t.assignee = ''; return makeNotifs('reassigned', t); }); say('Tiket dialihkan'); },
+    reject(id, reason) { update(id, t => { t.rejectReason = reason; ev(t, adminOf(t.team), 'Ditolak: ' + reason, 'DITOLAK'); return makeNotifs('rejected', t); }); say('Tiket ditolak'); },
+    duplicate(id, parentId) {
+      setDb(prev => {
+        const tickets = prev.tickets.map(t => ({ ...t, events:[...t.events] }));
+        const t = tickets.find(x => x.id === id), p = tickets.find(x => x.id === parentId);
+        t.parent = parentId; ev(t, adminOf(t.team), 'Digabung ke ' + p.code, 'DUPLIKAT'); p.meToo += 1 + t.meToo; ev(p, adminOf(p.team), `Tiket ${t.code} digabung ke sini`);
+        return { ...prev, tickets };
+      }); say('Ditandai duplikat');
+    },
+    schedule(id, s) {
+      update(id, t => {
+        t.exec = s.exec; t.vendor = s.exec === 'vendor' ? s.vendor.trim() : ''; t.assignee = s.exec === 'vendor' ? s.vendor.trim() : s.who; t.cost = s.cost; t.schedule = s.when;
+        const by = adminOf(t.team);
+        if (s.cost > THRESHOLD) { t.approval = 'pending'; t.waitReason = 'approval'; ev(t, by, `Estimasi ${fmtRp(s.cost)} diajukan ke ${OPS}`, 'MENUNGGU'); return makeNotifs('approval', t, { by }); }
+        ev(t, by, `Dijadwalkan ${fmtDT(s.when)}, ${s.exec === 'vendor' ? 'vendor ' + t.vendor : 'teknisi ' + s.who}`, 'DIJADWALKAN'); return makeNotifs('scheduled', t);
+      });
+      say(s.cost > THRESHOLD ? 'Diajukan ke Ops Manager' : 'Jadwal tersimpan, pelapor diberi tahu');
+    },
+    approve(id) { update(id, t => { t.approval = 'approved'; t.waitReason = ''; ev(t, OPS, `Biaya ${fmtRp(t.cost)} disetujui`, 'DIJADWALKAN'); if (!t.schedule) t.schedule = nextWorkSlot(Date.now(), 10); return [...makeNotifs('approved', t), ...makeNotifs('scheduled', t)]; }); say('Biaya disetujui'); },
+    deny(id) { update(id, t => { t.approval = 'denied'; t.waitReason = ''; ev(t, OPS, `Biaya ${fmtRp(t.cost)} ditolak, cari alternatif`, 'DITERIMA'); return makeNotifs('denied', t); }); say('Biaya ditolak'); },
+    start(id) { update(id, t => { ev(t, adminOf(t.team), 'Mulai dikerjakan oleh ' + t.assignee, 'DIKERJAKAN'); }); say('Status: Dikerjakan'); },
+    hold(id) { update(id, t => { t.waitReason = 'part'; ev(t, adminOf(t.team), 'Ditunda, menunggu part/vendor', 'MENUNGGU'); }); say('Status: Menunggu part'); },
+    resume(id) { update(id, t => { t.waitReason = ''; ev(t, adminOf(t.team), 'Pekerjaan dilanjutkan', 'DIKERJAKAN'); }); },
+    finish(id, photo, note) { update(id, t => { t.photos.push({ ...photo, fase:'after' }); t.doneNote = note || 'Pekerjaan selesai'; t.autoCloseAt = addWorkDays(Date.now(), AUTO_CLOSE_DAYS); ev(t, adminOf(t.team), 'Selesai: ' + t.doneNote + ' (foto sesudah diunggah)', 'SELESAI'); return makeNotifs('done', t); }); say('Selesai, pelapor diminta konfirmasi'); },
+    autoClose(id) { update(id, t => { ev(t, 'Sistem', `Tanpa respons ${AUTO_CLOSE_DAYS} hari kerja, ditutup otomatis`, 'CLOSED'); return makeNotifs('closed', t, { auto:true }); }); say('Tiket Closed otomatis'); },
+  };
+  function confirm(id, rating, fb) { update(id, t => { t.rating = rating; t.feedback = fb.trim(); ev(t, t.reporter.nama + ' (pelapor)', `Konfirmasi sudah beres, rating ${rating}/5`, 'CLOSED'); return makeNotifs('closed', t); }); say('Terima kasih, tiket Closed'); }
+  function reopen(id, note) { update(id, t => { ev(t, t.reporter.nama + ' (pelapor)', 'Belum beres: ' + (note.trim() || '-'), 'DIKERJAKAN'); t.photos = t.photos.filter(p => p.fase !== 'after'); return makeNotifs('reopened', t, { note: note.trim() }); }); say('Dikirim ke tim'); }
+
+  function scan(code) { setPhone({ screen:'form', loc:code, ticketId:null }); setForm(emptyForm()); show('pelapor'); }
+  function validate(f) {
+    const e = {};
+    if (!f.cat) e.cat = 'Pilih kategori.';
+    if (!f.issue && f.desc.trim().length < 10) e.desc = 'Tulis minimal 10 karakter atau pilih masalah umum.';
+    if (!f.nama.trim()) e.nama = 'Nama wajib diisi.';
+    if (f.wa.replace(/\D/g, '').length < 10) e.wa = 'No WhatsApp minimal 10 digit.';
+    return e;
+  }
+  function submit() {
+    const f = form; const e = validate(f);
+    if (Object.keys(e).length) { setForm({ ...f, errors: e, editId: f.editId || !!(e.nama || e.wa) }); return null; }
+    const n = ++seqRef.current; const id = 'u' + n; const loc = LOC[phone.loc]; const team = CATS[f.cat].team; const now = Date.now();
+    const t = { id, code: mkCode(n), loc: loc.code, cat: f.cat, jenis: f.jenis || jenisFor(f.cat), issue: f.issue, desc: f.desc.trim(), photos: f.photos.map(p => ({ ...p, fase:'before' })),
+      reporter: { nama: f.nama.trim(), divisi: f.divisi, wa: f.wa.trim(), email: f.email.trim() }, status:'BARU', waitReason:'', team, assignee:'', exec:'internal', vendor:'', cost:0, approval:null,
+      schedule:null, rating:null, feedback:'', meToo:0, createdAt: now, events:[{ at: now, actor: f.nama.trim() + ' (pelapor)', text: 'Laporan dibuat lewat QR ' + loc.code, from:null, to:'BARU' }], rejectReason:'', doneNote:'', autoCloseAt:null, mine:true, parent:null };
+    setDb(prev => ({ tickets: [...prev.tickets, t], notifs: [...makeNotifs('new', t), ...prev.notifs] }));
+    Object.assign(SAVED_ID, { nama: t.reporter.nama, divisi: t.reporter.divisi, wa: t.reporter.wa, email: t.reporter.email });
+    setPhone({ screen:'success', loc: loc.code, ticketId: id }); setDemoId(id); setSelId(id); setAdminTab('tiket'); setForm(emptyForm());
+    say(`Email ke ${OPS_EMAIL} dan Telegram ke ${TEAMS[team].group} terkirim`);
+    return id;
+  }
+  function meToo(id) {
+    update(id, t => { t.meToo += 1; t.mine = true; ev(t, form.nama + ' (pelapor)', 'Saya juga mengalami (+1)'); return makeNotifs('metoo', t, { nama: form.nama }); });
+    setPhone({ screen:'success', loc: phone.loc, ticketId: id, metoo:true }); setForm(emptyForm()); say('Tercatat sebagai laporan serupa');
+  }
+  function openTicket(id) { setSelId(id); setAdminTab('tiket'); show('admin'); }
+
+  /* Pemandu alur */
+  const demoT = db.tickets.find(t => t.id === demoId);
+  const stepInfo = (() => {
+    if (!demoT) {
+      if (phone.screen === 'form') {
+        const ready = form.cat && (form.issue || form.desc.trim().length >= 10);
+        return { step: 2, title:'Isi form', text:`Lokasi ${LOC[phone.loc].name} Lt ${LOC[phone.loc].floor} terisi otomatis dari QR. Pelapor cukup pilih masalah umum, tambah foto, lalu kirim. Identitas diingat di HP, tanpa login.`, action: ready ? 'Kirim laporan' : 'Isi form contoh' };
+      }
+      return { step: 1, title:'Scan QR', text:'Karyawan memindai stiker QR yang ditempel di area. Pilih stiker di layar HP atau di tab Stiker QR pada panel admin.', action:'Scan QR Toilet Pria (Urinoir) Lt 1' };
+    }
+    const s = demoT.status, code = demoT.code, team = TEAMS[demoT.team];
+    if (s === 'BARU') return { step: 4, title:'Notifikasi', text:`${code} masuk dengan status Baru. Email terkirim ke ${OPS_EMAIL} dan Telegram ke grup ${team.group}. Admin bisa langsung menekan Terima dari Telegram.`, action:'Admin tekan Terima di Telegram' };
+    if (s === 'DITERIMA') return { step: 5, title:'Follow up & jadwal', text:`Admin menentukan jadwal dan pelaksana (internal atau vendor). Biaya di atas ${fmtRp(THRESHOLD)} otomatis meminta persetujuan Ops Manager.`, action:`Jadwalkan ${fmtDay(nextWorkSlot(Date.now(), 10)).split(',')[0]} 10.00` };
+    if (s === 'MENUNGGU') return { step: 5, title:'Menunggu', text: demoT.waitReason === 'approval' ? `Estimasi ${fmtRp(demoT.cost)} menunggu persetujuan ${OPS}.` : 'Pekerjaan ditunda menunggu part atau vendor.', action: demoT.waitReason === 'approval' ? 'Ops Manager menyetujui' : 'Lanjutkan pekerjaan' };
+    if (s === 'DIJADWALKAN') return { step: 5, title:'Follow up & jadwal', text:'Pelapor menerima kabar jadwal lewat email dan halaman status. Di hari H, pelaksana menandai mulai dikerjakan.', action:'Mulai dikerjakan' };
+    if (s === 'DIKERJAKAN') return { step: 5, title:'Pengerjaan', text:'Setelah selesai, pelaksana wajib mengunggah foto sesudah sebagai bukti.', action:'Unggah foto sesudah & tandai selesai' };
+    if (s === 'SELESAI') return { step: 6, title:'Konfirmasi pelapor', text:`Pelapor diminta konfirmasi lewat halaman status. Tanpa respons ${AUTO_CLOSE_DAYS} hari kerja, tiket otomatis Closed.`, action:'Pelapor konfirmasi: sudah beres' };
+    return { step: 6, allDone: true, title: ST[s].label, text:`Alur ${code} selesai. Semua langkah tercatat di riwayat tiket dan masuk ke dashboard.`, action:'Ulangi dari scan QR' };
+  })();
+
+  function demoNext() {
+    if (!demoT) {
+      if (phone.screen !== 'form') { scan('L1-TOILET-PRIA-URINOIR'); return; }
+      const ready = form.cat && (form.issue || form.desc.trim().length >= 10);
+      if (!ready) {
+        const chip = (QUICK[LOC[phone.loc].area] || [])[phone.loc === 'L1-TOILET-PRIA-URINOIR' ? 1 : 0];
+        setForm(f => ({ ...f, issue: chip[0], cat: chip[1], jenis: jenisFor(chip[1]), desc: phone.loc === 'L1-TOILET-PRIA-URINOIR' ? 'Urinoir paling ujung mampet, air menggenang di lantai.' : 'Mohon segera dicek.', photos: f.photos.length ? f.photos : [samplePhoto(chip[0])], email: f.email || 'rina.kartika@apotekalpro.id', dupDismissed: true, errors:{} }));
+        show('pelapor'); return;
+      }
+      if (submit()) show('notif');
+      return;
+    }
+    const id = demoT.id, s = demoT.status;
+    if (s === 'BARU') { act.fromTelegram(id, 'accept'); show('admin'); }
+    else if (s === 'DITERIMA') { act.schedule(id, { when: nextWorkSlot(Date.now(), 10), exec:'internal', who: TEAMS[demoT.team].staff[0], vendor:'', cost: 0 }); setSelId(id); show('notif'); }
+    else if (s === 'MENUNGGU') { demoT.waitReason === 'approval' ? act.approve(id) : act.resume(id); setSelId(id); show('admin'); }
+    else if (s === 'DIJADWALKAN') { act.start(id); setSelId(id); show('admin'); }
+    else if (s === 'DIKERJAKAN') { act.finish(id, samplePhoto('Sudah diperbaiki', true), demoT.loc === 'L1-TOILET-PRIA-URINOIR' ? 'Saluran urinoir dibersihkan' : 'Perbaikan selesai'); setSelId(id); setPhone({ screen:'status', loc: demoT.loc, ticketId: id }); show('pelapor'); }
+    else if (s === 'SELESAI') { confirm(id, 5, 'Cepat ditangani.'); setPhone({ screen:'status', loc: demoT.loc, ticketId: id }); show('pelapor'); }
+    else resetDemo();
+  }
+  function resetDemo() { setDemoId(null); setSelId(null); setPhone({ screen:'scan', loc:null, ticketId:null }); setForm(emptyForm()); show('pelapor'); }
+  function resetAll() { NID = 0; seqRef.current = 12; Object.assign(SAVED_ID, PEOPLE.rina); setDb(seed()); resetDemo(); setAdminTab('tiket'); say('Data contoh dipulihkan'); }
+
+  const ctx = { db, phone, setPhone, form, setForm, submit, meToo, scan, act, confirm, reopen, adminTab, setAdminTab, selId, setSelId, openTicket, demoId, stepInfo, demoNext, resetDemo };
+  const nextTheme = theme === 'dark' ? 'light' : 'dark';
+  const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches);
+  const newNotifs = db.notifs.filter(n => n.fresh).length;
+
+  return html`<${Ctx.Provider} value=${ctx}><div className="wrap">
+    <header className="topbar">
+      <div className="logo"><img src=${LOGO} alt="Apotek Alpro" /></div>
+      <div className="brandname"><b>Tiket Fasilitas HQ</b><span className="caption">Prototype alur pengaduan fasilitas kantor pusat · data contoh</span></div>
+      <div className="spacer"></div>
+      <div className="toolbar">
+        <button className="btn btn-secondary btn-sm" onClick=${() => setTheme(isDark ? 'light' : 'dark')} aria-label="Ganti tema"><${Icon} name=${isDark ? 'sun' : 'moon'} size=${14} />${isDark ? 'Terang' : 'Gelap'}</button>
+        <button className="btn btn-secondary btn-sm" onClick=${resetAll}><${Icon} name="reset" size=${14} />Reset data</button>
+      </div>
+    </header>
+    <${Flow} />
+    <div className="switch small tabs" role="tablist" style=${{ alignSelf:'flex-start' }}>
+      ${[['pelapor','HP pelapor','phone'],['notif','Notifikasi','bell'],['admin','Admin','monitor']].map(([k, l, ic]) => html`<button key=${k} role="tab" className="tab" aria-selected=${String(view === k)} onClick=${() => show(k)}><${Icon} name=${ic} size=${14} />${l}${k === 'notif' && newNotifs > 0 && html`<span className="count">${newNotifs}</span>`}</button>`)}
+    </div>
+    <div className="cols" data-view=${view} data-right=${right}>
+      <div className="col col-pelapor"><div className="colhead"><span className="n">1</span><b>HP pelapor</b><span className="caption">Karyawan HQ, tanpa login</span></div><${Phone} /></div>
+      <div className="col col-notif">
+        <div className="colhead"><span className="n">2</span><b>Notifikasi</b><span className="caption">Email + Telegram</span>
+          <div className="switch mid tabs" style=${{ marginLeft:'auto' }}><button className="tab" aria-selected="true">Notifikasi</button><button className="tab" aria-selected="false" onClick=${() => show('admin')}>Admin</button></div></div>
+        <${Notifs} /></div>
+      <div className="col col-admin">
+        <div className="colhead"><span className="n">3</span><b>Panel admin</b><span className="caption">GA · IT · Housekeeping · Ops Manager</span>
+          <div className="switch mid tabs" style=${{ marginLeft:'auto' }}><button className="tab" aria-selected="false" onClick=${() => show('notif')}>Notifikasi${newNotifs > 0 && html`<span className="count">${newNotifs}</span>`}</button><button className="tab" aria-selected="true">Admin</button></div></div>
+        <${Admin} /></div>
+    </div>
+    ${toast && html`<div className="toast" role="status"><${Icon} name="checkc" />${toast}</div>`}
+  </div><//>`;
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(html`<${App} />`);
+</script>
+
+</head>
+</html>
