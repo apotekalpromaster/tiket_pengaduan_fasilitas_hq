@@ -33,3 +33,9 @@ export function jenisFor(categoryKode: string | undefined): Jenis {
 }
 
 export const locationLabel = (l: { lantai: number; nama: string }) => `Lt ${l.lantai} · ${l.nama}`;
+
+export const NOTIFY_LABEL: Record<string, string> = {
+  new: 'Laporan baru', accepted: 'Diterima', reassigned: 'Dialihkan', rejected: 'Ditolak', scheduled: 'Dijadwalkan',
+  approval: 'Minta approval', approved: 'Biaya disetujui', denied: 'Biaya ditolak', done: 'Selesai', reopened: 'Dibuka lagi',
+  closed: 'Closed', closed_auto: 'Closed otomatis', metoo: 'Laporan serupa', escalation: 'Eskalasi SLA',
+};

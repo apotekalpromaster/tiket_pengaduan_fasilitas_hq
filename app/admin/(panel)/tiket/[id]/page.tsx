@@ -8,7 +8,7 @@ import { db } from '@/lib/supabase/admin';
 import { availableActions } from '@/lib/flow';
 import { nextWorkSlot } from '@/lib/workhours';
 import { fmtDateTime, fmtDay, fmtRp, fmtTime, toWibInput } from '@/lib/format';
-import { OPEN_STATUSES, STATUS_LABEL, locationLabel } from '@/lib/labels';
+import { NOTIFY_LABEL, OPEN_STATUSES, STATUS_LABEL, locationLabel } from '@/lib/labels';
 import { env } from '@/lib/env';
 import { Card, Chip } from '@/components/ui';
 import { StatusChip } from '@/components/status';
@@ -113,7 +113,7 @@ export default async function TicketDetail({ params }: { params: Promise<{ id: s
                 {notifs.map(n => (
                   <li key={n.id} className="flex flex-wrap items-center gap-2">
                     {n.channel === 'email' ? <Mail className="size-3.5 text-sky-text" /> : <MessageCircle className="size-3.5 text-violet-text" />}
-                    <span className="min-w-0 flex-1 break-words"><b className="font-semibold">{n.kind}</b> · {n.target} · {fmtDateTime(n.created_at)}
+                    <span className="min-w-0 flex-1 break-words"><b className="font-semibold">{NOTIFY_LABEL[n.kind] ?? n.kind}</b> · {n.target} · {fmtDateTime(n.created_at)}
                       {n.error && <span className="block text-muted">{n.error}</span>}</span>
                     <Chip tone={n.status === 'sent' ? 'emerald' : n.status === 'failed' ? 'red' : 'slate'}>{n.status === 'sent' ? 'Terkirim' : n.status === 'failed' ? 'Gagal' : 'Dilewati'}</Chip>
                     {n.status !== 'sent' && admin.role !== 'teknisi' && <ResendButton action={resendAction.bind(null, n.id, t.id)} />}

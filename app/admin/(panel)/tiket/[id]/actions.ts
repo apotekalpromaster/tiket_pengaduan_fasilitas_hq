@@ -2,6 +2,7 @@
 import { revalidatePath } from 'next/cache';
 import { requireAdmin } from '@/lib/auth';
 import { db } from '@/lib/supabase/admin';
+import { integrations } from '@/lib/env';
 import { getRefData } from '@/lib/data';
 import { runAction, savePhotos, type UploadFile } from '@/lib/tickets';
 import { resend } from '@/lib/notify';
@@ -67,7 +68,11 @@ export async function ticketAction(ticketId: string, _: ActionState, form: FormD
         const { data: t } = await db().from('tickets').select('id, code, status').eq('id', ticketId).maybeSingle();
         if (!t) return { error: 'Tiket tidak ditemukan.' };
         if (t.status !== 'DIKERJAKAN') return { error: 'Tiket tidak sedang dikerjakan.' };
-        if (files.length) await savePhotos(t, files, 'after');
+        const saved = files.length ? await savePhotos(t, files, 'after') : 0;
+        if (files.length && saved < files.length) {
+          await db().from('ticket_events').insert({ ticket_id: t.id, actor_type: 'system', actor_name: 'Sistem', action: 'photo',
+            note: integrations.drive ? `${files.length - saved} foto sesudah gagal diunggah ke Google Drive` : 'Foto sesudah tidak disimpan: Google Drive belum dikonfigurasi' });
+        }
         const cost = str(form, 'cost');
         action = { type: 'finish', note: str(form, 'note'), hasAfterPhoto: (count ?? 0) > 0 || files.length > 0, costActual: cost ? Number(cost.replace(/\D/g, '')) : null };
         break;

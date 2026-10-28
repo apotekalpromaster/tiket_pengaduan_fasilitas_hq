@@ -1,25 +1,48 @@
 # Tiket Fasilitas HQ — Apotek Alpro
 
-Aplikasi pelaporan kerusakan dan kebutuhan fasilitas kantor pusat. Alurnya: karyawan scan QR di area → isi form → submit → email ke operation@apotekalpro.id dan Telegram ke tim → admin follow up/jadwalkan → tiket Closed.
+Pelaporan kerusakan dan kebutuhan fasilitas kantor pusat. Karyawan memindai QR di area, mengisi form tanpa login, lalu email (ke operation@apotekalpro.id) dan Telegram terkirim ke tim penanganan (OSS, OASIS, Housekeeping). Admin menerima, menjadwalkan, meminta approval biaya bila perlu, lalu menyelesaikan dengan foto sesudah. Pelapor mengonfirmasi, dan tiket Closed.
 
-## Isi repo
+## Stack
+Next.js 15 (App Router) · Tailwind CSS v4 (token Aset Kantor Alpro) · Supabase kantor (schema `fasilitas`) · Google Drive (Shared Drive) · SMTP Google Workspace · Telegram Bot · Vercel.
 
+## Struktur
 | Path | Isi |
 |---|---|
-| `docs/RENCANA_KERJA.md` | Rencana kerja: keputusan, data lokasi QR, model data, tahapan, biaya, verifikasi |
-| `prototype/index.html` | Prototype klikable untuk visualisasi proses (data contoh, tanpa backend) |
+| `app/(public)` | Form QR `/r/[kode]`, status pelapor `/t/[token]`, `/saya` |
+| `app/admin` | Panel admin: dashboard, tiket, jadwal, laporan, stiker QR, master data, profil |
+| `app/api` | Laporan, duplikat, konfirmasi, foto (proxy Drive), webhook Telegram, cron, export Excel |
+| `lib/flow.ts` | State machine tiket dan hak akses per peran |
+| `lib/workhours.ts` | Jam kerja WIB, hari libur, SLA, auto-close |
+| `lib/notify/` | Template dan pengiriman email/Telegram |
+| `supabase/` | Migrasi SQL + `SETUP.md` |
+| `docs/` | `RENCANA_KERJA.md`, `DEPLOY.md` |
+| `prototype/` | Prototype klikable (data contoh) |
 
-## Menjalankan prototype
+## Pengembangan lokal
 
-Buka `prototype/index.html` di browser (perlu internet untuk React, htm, qrcode-generator, dan Google Fonts dari CDN).
+```bash
+npm install
+```
 
-- Tombol di kartu alur menjalankan demo langkah demi langkah: scan QR → isi form → kirim → Terima dari Telegram → jadwal → dikerjakan → foto sesudah → konfirmasi pelapor → Closed.
-- Coba manual: scan Pantry Lt 2 lalu pilih "Galon habis" untuk melihat deteksi duplikat ("Saya juga mengalami").
-- Biaya di atas Rp 1 jt saat menjadwalkan memicu approval Ops Manager.
-- Tab Stiker QR berisi QR asli untuk 24 titik; klik stiker untuk simulasi scan.
+```bash
+cp .env.example .env.local
+```
 
-Tampilan mengikuti design system Aset Kantor Alpro (Plus Jakarta Sans, oranye `#f97316`, tema terang/gelap).
+```bash
+npm run dev
+```
 
-## Stack aplikasi final
+## Pemeriksaan
 
-Next.js (Vercel), Supabase kantor (schema `fasilitas`), foto di Google Drive (Shared Drive), email SMTP Google Workspace, Telegram Bot.
+```bash
+npm run lint && npm run typecheck && npm test
+```
+
+```bash
+npm run e2e
+```
+
+`npm test` menjalankan uji unit dan uji migrasi SQL di PGlite. `npm run e2e` mem-build aplikasi dengan Supabase tiruan (PGlite + migrasi asli), lalu menjalankan alur pelapor dan admin di Chromium. Tangkapan layarnya ada di `e2e/.output/`.
+
+## Deploy
+Lihat `supabase/SETUP.md` (database) dan `docs/DEPLOY.md` (Vercel, Drive, SMTP, Telegram, domain, checklist UAT).
