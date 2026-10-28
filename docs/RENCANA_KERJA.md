@@ -14,7 +14,7 @@ Repo: `apotekalpromaster/tiket_pengaduan_fasilitas_hq` (masih kosong), branch `c
 | Foto | Google Drive perusahaan (upload lewat server) |
 | Identitas pelapor | Tanpa login; Nama, Divisi, No WA diingat di browser |
 | Notifikasi | Email ke **operation@apotekalpro.id** + Telegram Bot (grup menyusul); WA ditunda |
-| Penanganan | Routing per kategori → tim (GA / IT / Housekeeping), admin bisa assign ulang |
+| Penanganan | Routing per kategori → tim (OSS / OASIS / Housekeeping), admin bisa assign ulang |
 | Approver biaya | Ops Manager (Hendri) |
 | Jam kerja | Senin–Jumat 09.00–16.00 |
 | Urgensi | **Tidak dipilih oleh pelapor.** Target SLA per kategori diatur admin, nilainya *menunggu konfirmasi* |
@@ -82,10 +82,10 @@ Kode QR mengikuti pola `L{lantai}-{SLUG}`, mis. `L1-TOILET-PRIA-URINOIR`, `L2-PA
 ## Routing kategori → tim
 | Kategori | Tim |
 |---|---|
-| Listrik, AC, Plumbing/Air, Bangunan, Furnitur | GA |
-| IT/Jaringan, Proyektor/TV | IT |
+| Listrik, AC, Plumbing/Air, Bangunan, Furnitur | OSS |
+| IT/Jaringan, Proyektor/TV | OASIS |
 | Kebersihan, Konsumabel (sabun, tisu, galon) | Housekeeping |
-| Keamanan | GA |
+| Keamanan | OSS |
 
 Semua tiket mengirim email ke **operation@apotekalpro.id**. Telegram dikirim ke grup tim terkait (chat_id diisi setelah grup dibuat). Mapping bisa diubah di panel admin.
 
@@ -195,7 +195,7 @@ Output: `prototype/index.html` di repo (commit + push ke branch) dan dipublikasi
 3. Grup Telegram per tim (akan ditambahkan)
 4. Kredensial lewat env Vercel: Supabase anon/service key, JSON Service Account + ID Shared Drive, SMTP App Password
 5. Domain/subdomain (usulan `tiket.apotekalpro.id`)
-6. Nama & email admin per tim (GA, IT, Housekeeping)
+6. Nama & email admin per tim (OSS, OASIS, Housekeeping)
 
 ## Verifikasi (end-to-end)
 1. `npm run lint && npm run build` bersih; unit test `lib/workhours.ts` (Sen–Jum 09–16, libur, lintas hari/akhir pekan) dan logika duplikat.

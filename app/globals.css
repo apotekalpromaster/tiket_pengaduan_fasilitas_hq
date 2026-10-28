@@ -1,0 +1,78 @@
+@import "tailwindcss";
+
+/* Token dari design system Aset Kantor Alpro (sama dengan Room Booking HQ, Short ED, Lapor Sales). */
+:root {
+  --page: #f8fafc; --surface: #ffffff; --paper: #ffffff; --paper-ink: #0f172a;
+  --ink: #0f172a; --muted: #64748b; --line: #e2e8f0;
+  --brand-50: #fff7ed; --brand-100: #ffedd5; --brand-200: #fed7aa; --brand-300: #fdba74; --brand-400: #fb923c;
+  --brand-500: #f97316; --brand-600: #ea580c; --brand-text: #c2410c;
+  --slate-50: #f8fafc; --slate-100: #f1f5f9; --slate-200: #e2e8f0; --slate-400: #94a3b8; --slate-600: #475569; --slate-700: #334155; --slate-900: #0f172a;
+  --red-50: #fef2f2; --red-200: #fecaca; --red-500: #ef4444; --red-600: #dc2626; --red-text: #b91c1c;
+  --amber-50: #fffbeb; --amber-200: #fde68a; --amber-text: #b45309;
+  --emerald-50: #ecfdf5; --emerald-200: #a7f3d0; --emerald-text: #047857;
+  --sky-50: #f0f9ff; --sky-200: #bae6fd; --sky-text: #0369a1;
+  --violet-50: #f5f3ff; --violet-200: #ddd6fe; --violet-text: #6d28d9;
+  --shadow-card-v: 0 1px 3px 0 #e2e8f080, 0 1px 2px -1px #e2e8f080;
+  --shadow-primary-v: 0 1px 2px 0 #f9731633;
+  color-scheme: light;
+}
+@media screen and (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --page: #0b1220; --surface: #111a2b; --ink: #e6ebf2; --muted: #9aa6b8; --line: #2a3546;
+    --brand-50: #2a1a0e; --brand-100: #3b2412; --brand-200: #5c3616; --brand-300: #8a4b1a; --brand-text: #fdba74;
+    --slate-50: #162135; --slate-100: #1c2940; --slate-200: #2a3851; --slate-400: #8391a7; --slate-600: #aeb9c9; --slate-700: #c6cfdb;
+    --red-50: #33161a; --red-200: #6b252c; --red-text: #fca5a5;
+    --amber-50: #2e2410; --amber-200: #5e4818; --amber-text: #fcd34d;
+    --emerald-50: #0f2a22; --emerald-200: #1a5240; --emerald-text: #6ee7b7;
+    --sky-50: #0f2333; --sky-200: #1d4561; --sky-text: #7dd3fc;
+    --violet-50: #231a3a; --violet-200: #43357a; --violet-text: #c4b5fd;
+    --shadow-card-v: 0 1px 3px 0 #00000059, 0 1px 2px -1px #00000059;
+    color-scheme: dark;
+  }
+}
+@media screen {
+  :root[data-theme="dark"] {
+    --page: #0b1220; --surface: #111a2b; --ink: #e6ebf2; --muted: #9aa6b8; --line: #2a3546;
+    --brand-50: #2a1a0e; --brand-100: #3b2412; --brand-200: #5c3616; --brand-300: #8a4b1a; --brand-text: #fdba74;
+    --slate-50: #162135; --slate-100: #1c2940; --slate-200: #2a3851; --slate-400: #8391a7; --slate-600: #aeb9c9; --slate-700: #c6cfdb;
+    --red-50: #33161a; --red-200: #6b252c; --red-text: #fca5a5;
+    --amber-50: #2e2410; --amber-200: #5e4818; --amber-text: #fcd34d;
+    --emerald-50: #0f2a22; --emerald-200: #1a5240; --emerald-text: #6ee7b7;
+    --sky-50: #0f2333; --sky-200: #1d4561; --sky-text: #7dd3fc;
+    --violet-50: #231a3a; --violet-200: #43357a; --violet-text: #c4b5fd;
+    --shadow-card-v: 0 1px 3px 0 #00000059, 0 1px 2px -1px #00000059;
+    color-scheme: dark;
+  }
+}
+
+@theme inline {
+  --font-sans: "Plus Jakarta Sans", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --color-page: var(--page); --color-surface: var(--surface); --color-paper: var(--paper); --color-paper-ink: var(--paper-ink);
+  --color-ink: var(--ink); --color-muted: var(--muted); --color-line: var(--line);
+  --color-brand-50: var(--brand-50); --color-brand-100: var(--brand-100); --color-brand-200: var(--brand-200); --color-brand-300: var(--brand-300);
+  --color-brand-400: var(--brand-400); --color-brand-500: var(--brand-500); --color-brand-600: var(--brand-600); --color-brand-text: var(--brand-text);
+  --color-slate-50: var(--slate-50); --color-slate-100: var(--slate-100); --color-slate-200: var(--slate-200); --color-slate-400: var(--slate-400);
+  --color-slate-600: var(--slate-600); --color-slate-700: var(--slate-700); --color-slate-900: var(--slate-900);
+  --color-red-50: var(--red-50); --color-red-200: var(--red-200); --color-red-500: var(--red-500); --color-red-600: var(--red-600); --color-red-text: var(--red-text);
+  --color-amber-50: var(--amber-50); --color-amber-200: var(--amber-200); --color-amber-text: var(--amber-text);
+  --color-emerald-50: var(--emerald-50); --color-emerald-200: var(--emerald-200); --color-emerald-text: var(--emerald-text);
+  --color-sky-50: var(--sky-50); --color-sky-200: var(--sky-200); --color-sky-text: var(--sky-text);
+  --color-violet-50: var(--violet-50); --color-violet-200: var(--violet-200); --color-violet-text: var(--violet-text);
+  --shadow-card: var(--shadow-card-v);
+  --shadow-primary: var(--shadow-primary-v);
+}
+
+html, body { background: var(--page); color: var(--ink); }
+body { font-family: var(--font-sans); font-size: 14px; line-height: 20px; -webkit-tap-highlight-color: transparent; }
+:focus-visible { outline: 2px solid var(--brand-500); outline-offset: 2px; border-radius: 6px; }
+h1, h2, h3 { text-wrap: balance; }
+.num { font-variant-numeric: tabular-nums; }
+
+@keyframes pulse-soft { 50% { opacity: .55; } }
+.skeleton { animation: pulse-soft 1.6s ease-in-out infinite; background: var(--slate-200); border-radius: 8px; }
+@media (prefers-reduced-motion: reduce) { .skeleton { animation: none; } }
+
+@media print {
+  .no-print { display: none !important; }
+  html, body { background: #ffffff; color: #0f172a; }
+}

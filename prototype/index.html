@@ -425,8 +425,8 @@ const LOC = Object.fromEntries(LOCS.map(l => [l.code, l]));
 const locLabel = l => `Lt ${l.floor} · ${l.name}`;
 
 const TEAMS = {
-  ga:{ name:'GA', group:'GA Fasilitas HQ', admin:'Budi', staff:['Darto','Yanto'] },
-  it:{ name:'IT', group:'IT Support HQ', admin:'Andre', staff:['Fajar','Rizky'] },
+  ga:{ name:'OSS', group:'OSS Fasilitas HQ', admin:'Budi', staff:['Darto','Yanto'] },
+  it:{ name:'OASIS', group:'OASIS Support HQ', admin:'Andre', staff:['Fajar','Rizky'] },
   hk:{ name:'Housekeeping', group:'Housekeeping HQ', admin:'Sinta', staff:['Sri','Wati'] },
 };
 const CATS = {
@@ -446,7 +446,7 @@ const QUICK = {
   wudhu:[['Air mati','plumbing'],['Keran bocor','plumbing'],['Lantai licin/kotor','kebersihan'],['Lampu mati','listrik']],
 };
 QUICK.direksi = QUICK.meeting; QUICK.training = QUICK.meeting;
-const DIVISI = ['Finance','Accounting','Tax','HR & GA','IT','Operation','Procurement','Marketing','Legal','Business Development','Sekretariat Direksi','Lainnya'];
+const DIVISI = ['Finance','Accounting','Tax','HR','OSS','OASIS','Operation','Procurement','Marketing','Legal','Business Development','Sekretariat Direksi','Lainnya'];
 
 const ST = {
   BARU:{ label:'Baru', tone:'sky' }, DITERIMA:{ label:'Diterima', tone:'violet' }, DIJADWALKAN:{ label:'Dijadwalkan', tone:'brand' },
@@ -556,8 +556,8 @@ const PEOPLE = {
   rina:{ nama:'Rina Kartika', divisi:'Finance', wa:'0812-3456-7890', email:'' },
   dewi:{ nama:'Dewi Anggraini', divisi:'Marketing', wa:'0813-2211-4455', email:'' },
   agus:{ nama:'Agus Salim', divisi:'Procurement', wa:'0815-7788-1122', email:'' },
-  maya:{ nama:'Maya Putri', divisi:'HR & GA', wa:'0817-6655-3344', email:'' },
-  yoga:{ nama:'Yoga Pratama', divisi:'IT', wa:'0821-9988-7766', email:'' },
+  maya:{ nama:'Maya Putri', divisi:'HR', wa:'0817-6655-3344', email:'' },
+  yoga:{ nama:'Yoga Pratama', divisi:'OASIS', wa:'0821-9988-7766', email:'' },
   lestari:{ nama:'Lestari Wulan', divisi:'Accounting', wa:'0856-1234-9876', email:'' },
   hana:{ nama:'Hana Safitri', divisi:'Tax', wa:'0819-4433-2211', email:'' },
   nadia:{ nama:'Nadia Rahma', divisi:'Sekretariat Direksi', wa:'0811-2020-3030', email:'' },
@@ -910,7 +910,7 @@ function Admin() {
   return html`<div className="card">
     <div className="adminbar">
       <div className="tabs" role="tablist">${tabs.map(([k, l, ic]) => html`<button key=${k} role="tab" className="tab" aria-selected=${String(adminTab === k)} onClick=${() => setAdminTab(k)}><${Icon} name=${ic} size=${14} />${l}${k === 'tiket' && html`<span className="count">${db.tickets.filter(t => OPEN.includes(t.status)).length}</span>`}</button>`)}</div>
-      <div className="who"><div className="avatar" style=${{ width:28, height:28, fontSize:11 }}>BU</div>Budi · Admin GA</div>
+      <div className="who"><div className="avatar" style=${{ width:28, height:28, fontSize:11 }}>BU</div>Budi · Admin OSS</div>
     </div>
     <div className="abody">
       ${adminTab === 'dash' && html`<${Dashboard} />`}
@@ -946,7 +946,7 @@ function Dashboard() {
     <div className="two">
       <section className="panel"><h3>Tiket per kategori</h3>
         <div className="bars">${byCat.map(([k, c, n]) => html`<div className="bar" key=${k}><span>${c.name}</span><div className="track"><div className=${'fillb ' + c.team} style=${{ width: (n / maxCat * 100) + '%' }}></div></div><span className="num" style=${{ textAlign:'right', fontWeight:700 }}>${n}</span></div>`)}</div>
-        <div className="legend"><span><i style=${{ background:'var(--brand-500)' }}></i>GA</span><span><i style=${{ background:'var(--violet-text)' }}></i>IT</span><span><i style=${{ background:'var(--sky-text)' }}></i>Housekeeping</span></div>
+        <div className="legend"><span><i style=${{ background:'var(--brand-500)' }}></i>OSS</span><span><i style=${{ background:'var(--violet-text)' }}></i>OASIS</span><span><i style=${{ background:'var(--sky-text)' }}></i>Housekeeping</span></div>
       </section>
       <section className="panel"><h3>Lokasi paling sering dilaporkan</h3>
         <div className="tablewrap"><table><thead><tr><th>Lokasi</th><th style=${{ textAlign:'right' }}>Laporan</th></tr></thead><tbody>
@@ -970,7 +970,7 @@ function Kanban() {
   const T = db.tickets.filter(t => team === 'all' || t.team === team);
   return html`<${React.Fragment}>
     <div className="row" style=${{ justifyContent:'space-between' }}>
-      <div className="tabs">${[['all','Semua tim'],['ga','GA'],['it','IT'],['hk','Housekeeping']].map(([k, l]) => html`<button key=${k} className="tab" aria-selected=${String(team === k)} onClick=${() => setTeam(k)}>${l}<span className="count">${(k === 'all' ? db.tickets : db.tickets.filter(t => t.team === k)).filter(t => OPEN.includes(t.status)).length}</span></button>`)}</div>
+      <div className="tabs">${[['all','Semua tim'],['ga','OSS'],['it','OASIS'],['hk','Housekeeping']].map(([k, l]) => html`<button key=${k} className="tab" aria-selected=${String(team === k)} onClick=${() => setTeam(k)}>${l}<span className="count">${(k === 'all' ? db.tickets : db.tickets.filter(t => t.team === k)).filter(t => OPEN.includes(t.status)).length}</span></button>`)}</div>
       <span className="caption">Klik kartu untuk membuka detail</span>
     </div>
     <div className="kanban">${cols.map(c => {
@@ -1318,7 +1318,7 @@ function App() {
           <div className="switch mid tabs" style=${{ marginLeft:'auto' }}><button className="tab" aria-selected="true">Notifikasi</button><button className="tab" aria-selected="false" onClick=${() => show('admin')}>Admin</button></div></div>
         <${Notifs} /></div>
       <div className="col col-admin">
-        <div className="colhead"><span className="n">3</span><b>Panel admin</b><span className="caption">GA · IT · Housekeeping · Ops Manager</span>
+        <div className="colhead"><span className="n">3</span><b>Panel admin</b><span className="caption">OSS · OASIS · Housekeeping · Ops Manager</span>
           <div className="switch mid tabs" style=${{ marginLeft:'auto' }}><button className="tab" aria-selected="false" onClick=${() => show('notif')}>Notifikasi${newNotifs > 0 && html`<span className="count">${newNotifs}</span>`}</button><button className="tab" aria-selected="true">Admin</button></div></div>
         <${Admin} /></div>
     </div>
