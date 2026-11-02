@@ -8,6 +8,11 @@
 
 > Paket Hobby hanya untuk pemakaian non-komersial dan cron-nya maksimal sekali sehari. Untuk aplikasi resmi kantor, gunakan **Pro**.
 
+### Region fungsi = region database
+`vercel.json` menetapkan `"regions": ["sin1"]` (Singapore), sama dengan region Supabase kantor. Jika berbeda, setiap query menyeberang benua (±250 ms per query) dan panel admin terasa lambat.
+- Cek di Vercel → Project → **Settings → Functions → Function Region**: harus **Singapore, Southeast Asia (sin1)**.
+- Bila Supabase pindah region, ubah nilai `regions` di `vercel.json` (Tokyo `hnd1`, Mumbai `bom1`).
+
 ## 2. Environment Variables
 Lihat `.env.example`. Ringkasnya:
 
@@ -67,3 +72,10 @@ Vercel → Project → Settings → Domains → tambahkan `tiket.apotekalpro.id`
 
 ## 9. Rilis produksi
 Merge branch ke `main` (lewat PR) → Vercel deploy Production → cetak semua stiker dari **Stiker QR** → pilot Lantai 2 selama 1 minggu → tempel semua QR → sosialisasi.
+
+## 10. Bila panel admin masih terasa lambat
+1. Pastikan region fungsi sudah **sin1** (lihat bagian 1).
+2. Buka halaman pertama kali setelah lama tidak dipakai biasanya 1–2 detik lebih lama (cold start); kunjungan berikutnya cepat.
+3. Vercel → Project → **Logs** → filter path `/admin`: kolom *Duration* di atas ±1 detik saat server hangat menandakan masalah. Kirim tangkapan layarnya.
+4. Opsional, menghemat satu panggilan per halaman: Supabase → **Project Settings → JWT Keys** → aktifkan *JWT signing keys* (asimetris), agar sesi diverifikasi tanpa memanggil server Auth. Karena project Supabase ini dipakai bersama aplikasi aset/seragam, lakukan sesuai panduan Supabase (buat kunci baru dulu, jangan cabut kunci lama sebelum semua aplikasi diuji).
+

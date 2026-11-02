@@ -46,14 +46,14 @@ export interface Stats {
 
 /** Statistik untuk rentang waktu [from, to). */
 export async function stats(from: Date, to: Date, teamId?: string | null): Promise<{ s: Stats; tickets: TicketView[] }> {
-  const ref = await getRefData();
-  const work = await workConfig();
+  const [ref, work] = await Promise.all([getRefData(), workConfig()]);
   let q = db().from('tickets').select('*').gte('created_at', from.toISOString()).lt('created_at', to.toISOString()).limit(5000);
   if (teamId) q = q.eq('team_id', teamId);
-  const T = (must(await q, 'memuat statistik') as Ticket[]).map(t => attach(t, ref));
   let oq = db().from('tickets').select('id, status, approval_status, sla_due_at, team_id').in('status', OPEN_STATUSES);
   if (teamId) oq = oq.eq('team_id', teamId);
-  const openRows = must(await oq, 'memuat tiket terbuka') as Pick<Ticket, 'id' | 'status' | 'approval_status' | 'sla_due_at' | 'team_id'>[];
+  const [rows, open] = await Promise.all([q, oq]);
+  const T = (must(rows, 'memuat statistik') as Ticket[]).map(t => attach(t, ref));
+  const openRows = must(open, 'memuat tiket terbuka') as Pick<Ticket, 'id' | 'status' | 'approval_status' | 'sla_due_at' | 'team_id'>[];
   const now = Date.now();
   const valid = T.filter(t => !['DITOLAK', 'DUPLIKAT'].includes(t.status));
   const resp = valid.filter(t => t.accepted_at).map(t => workHoursBetween(Date.parse(t.created_at), Date.parse(t.accepted_at!), work));

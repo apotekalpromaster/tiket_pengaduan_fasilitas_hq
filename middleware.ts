@@ -17,7 +17,11 @@ export async function middleware(req: NextRequest) {
       },
     },
   });
-  const { data: { user } } = await supabase.auth.getUser();
+  // Hanya untuk redirect tamu dan menyegarkan token kedaluwarsa (cookie baru ditulis lewat setAll).
+  // getSession() tidak memanggil server bila token masih berlaku. Verifikasi sesungguhnya
+  // dilakukan halaman lewat requireAdmin() → getClaims(), jadi tidak diulang di sini.
+  const { data } = await supabase.auth.getSession();
+  const user = Boolean(data.session);
   const path = req.nextUrl.pathname;
   if (!user && path.startsWith('/admin') && path !== '/admin/login') {
     const to = req.nextUrl.clone();

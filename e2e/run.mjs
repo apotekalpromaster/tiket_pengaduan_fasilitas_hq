@@ -1,7 +1,7 @@
 // Uji e2e lokal: build dengan Supabase tiruan, jalankan, uji alur pelapor di viewport HP.
 // Jalankan: npm run e2e   (butuh Playwright + Chromium)
 import { spawn, execSync } from 'node:child_process';
-import { mkdirSync } from 'node:fs';
+import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
@@ -23,6 +23,8 @@ try {
   start('node', ['e2e/mock-supabase.mjs']);
   await waitFor(`${MOCK}/rest/v1/teams`);
   if (!process.argv.includes('--no-build')) execSync('npx next build', { env, stdio: 'inherit' });
+  // Database tiruan selalu baru, jadi buang cache data dari run sebelumnya.
+  rmSync(new URL('../.next/cache/fetch-cache', import.meta.url), { recursive: true, force: true });
   const app = start('npx', ['next', 'start', '-p', '3100']);
   app.stderr.on('data', d => process.stderr.write(d));
   await waitFor(`${APP}/r`);
@@ -140,14 +142,35 @@ try {
   check('chip toilet', await page.getByRole('button', { name: 'Kloset/urinoir mampet' }).isVisible());
   await page.screenshot({ path: OUT + '05-desktop.png' });
 
+  // 8b. Cookie sesi palsu (JWT tanpa tanda tangan sah) harus ditolak halaman admin
+  {
+    const fakeB64 = o => Buffer.from(JSON.stringify(o)).toString('base64url');
+    const fakeExp = Math.floor(Date.now() / 1000) + 3600;
+    const fake = [fakeB64({ alg: 'HS256', typ: 'JWT' }), fakeB64({ sub: '00000000-0000-0000-0000-000000000000', exp: fakeExp, role: 'authenticated' }), 'palsu'].join('.');
+    const fakeSession = { access_token: fake, refresh_token: 'x', token_type: 'bearer', expires_in: 3600, expires_at: fakeExp, user: { id: '00000000-0000-0000-0000-000000000000' } };
+    const c2 = await browser.newContext();
+    await c2.addCookies([{ name: 'sb-127-auth-token', value: 'base64-' + Buffer.from(JSON.stringify(fakeSession)).toString('base64url'), url: APP }]);
+    const p2 = await c2.newPage();
+    await p2.goto(`${APP}/admin/master/admin`);
+    await p2.waitForURL(/\/admin\/login/, { timeout: 15000 }).catch(() => {});
+    check('cookie sesi palsu ditolak (diarahkan ke login)', p2.url().includes('/admin/login'), p2.url().replace(APP, ''));
+    check('data admin tidak bocor dengan sesi palsu', (await p2.getByText('hendri@e2e.test').count()) === 0);
+    await c2.close();
+  }
+
   // 9. Panel admin dengan sesi tiruan (super admin)
   const [u] = await sql(`insert into auth.users (email) values ('hendri@e2e.test') returning id`);
   await sql(`insert into fasilitas.admins (user_id, email, nama, role) values ($1, 'hendri@e2e.test', 'Hendri', 'super_admin')`, [u.id]);
-  const session = { access_token: 'e2e-access', refresh_token: 'e2e-refresh', token_type: 'bearer', expires_in: 3600, expires_at: Math.floor(Date.now() / 1000) + 3600,
+  const b64 = o => Buffer.from(JSON.stringify(o)).toString('base64url');
+  const tokenExp = Math.floor(Date.now() / 1000) + 3600;
+  const accessToken = [b64({ alg: 'HS256', typ: 'JWT' }), b64({ sub: u.id, email: 'hendri@e2e.test', aud: 'authenticated', role: 'authenticated', exp: tokenExp, iat: tokenExp - 3600, iss: `${MOCK}/auth/v1`, session_id: 'e2e' }), 'e2e'].join('.');
+  const session = { access_token: accessToken, refresh_token: 'e2e-refresh', token_type: 'bearer', expires_in: 3600, expires_at: Math.floor(Date.now() / 1000) + 3600,
     user: { id: u.id, email: 'hendri@e2e.test', aud: 'authenticated', role: 'authenticated', app_metadata: {}, user_metadata: {} } };
   await ctx.addCookies([{ name: 'sb-127-auth-token', value: 'base64-' + Buffer.from(JSON.stringify(session)).toString('base64url'), url: APP }]);
   const visit = async (path, name, text) => {
     const r = await page.goto(`${APP}${path}`);
+    // Halaman dialirkan bertahap (loading.tsx); tunggu isinya muncul.
+    await page.getByText(text).first().waitFor({ timeout: 15000 }).catch(() => {});
     const ok = r.status() === 200 && (await page.getByText(text).first().isVisible());
     check(`admin: ${name}`, ok, `${r.status()} ${page.url().replace(APP, '')}`);
     check(`admin: ${name} tanpa scroll horizontal`, await noHScroll());
@@ -166,7 +189,7 @@ try {
   const [tk] = await sql(`select id, code from fasilitas.tickets where status = 'BARU' order by created_at desc limit 1`);
   await page.setViewportSize({ width: 1280, height: 900 });
   const step = async (label, expect, fill) => {
-    await page.goto(`${APP}/admin/tiket/${tk.id}`);
+    await page.goto(`${APP}/admin/tiket/${tk.id}`, { waitUntil: 'networkidle' });
     if (fill) await fill();
     await page.getByRole('button', { name: label, exact: true }).first().click();
     await page.waitForTimeout(1500);
@@ -193,6 +216,7 @@ try {
   check('foto sesudah tersimpan ke Drive', after.length === 1, String(after.length));
   check('audit trail lengkap', ['create', 'accept', 'schedule', 'approve', 'start', 'finish'].every(a => evs.some(e => e.action === a)), evs.map(e => e.action).join(','));
   await page.goto(`${APP}/admin/tiket/${tk.id}`);
+  await page.getByText('Saluran urinoir dibersihkan').first().waitFor({ timeout: 15000 }).catch(() => {});
   check('detail menampilkan riwayat', await page.getByText('Saluran urinoir dibersihkan').first().isVisible());
   await page.screenshot({ path: OUT + '08-detail.png', fullPage: true });
 
@@ -204,6 +228,20 @@ try {
   await page.screenshot({ path: OUT + '09-qr.png', fullPage: true });
   await visit('/admin/master/lokasi', 'master lokasi', 'Tambah lokasi');
   check('master lokasi memuat 24 baris', (await page.locator('input[name=kode][value^="L"]').count()) === 24);
+  // Master data di-cache lintas request; perubahan harus langsung tampil.
+  await page.goto(`${APP}/r`);
+  check('lokasi baru belum ada sebelum ditambah', (await page.getByText('Ruang Uji Cache').count()) === 0);
+  await page.goto(`${APP}/admin/master/lokasi`);
+  await page.fill('input[placeholder="L2-PANTRY"]', 'L4-UJI-CACHE');
+  await page.fill('input[placeholder="Nama lokasi"]', 'Ruang Uji Cache');
+  await page.fill('input[placeholder="Lantai"]', '4');
+  await page.locator('form').filter({ has: page.locator('input[placeholder="L2-PANTRY"]') }).locator('select').selectOption({ label: 'Ruang Meeting' });
+  await page.getByRole('button', { name: 'Tambah', exact: true }).click();
+  await page.waitForURL(/master\/lokasi\?(ok|e)=/, { timeout: 15000, waitUntil: 'commit' });
+  check('tambah lokasi lewat panel', page.url().includes('ok='), decodeURIComponent(page.url().split('?')[1] ?? ''));
+  await page.goto(`${APP}/r`);
+  check('lokasi baru langsung tampil di /r (cache diperbarui)', await page.getByText('Ruang Uji Cache').isVisible());
+  await page.goto(`${APP}/admin/master/lokasi`);
   await visit('/admin/master/masalah', 'master masalah umum', 'Tipe area');
   await visit('/admin/master/kategori', 'master kategori', 'SLA respon');
   await visit('/admin/master/tim', 'master tim', 'Tim OASIS');
@@ -218,6 +256,26 @@ try {
   await page.setViewportSize({ width: 390, height: 844 });
   await visit('/admin/tiket', 'kanban di HP', 'Kanban');
   await page.screenshot({ path: OUT + '10-admin-hp.png' });
+
+  // 10. Pengukuran kinerja: latensi Supabase disimulasikan (250 ms ≈ Vercel iad1 → Supabase Singapore)
+  await page.setViewportSize({ width: 1280, height: 900 });
+  const LAT = Number(process.env.PERF_LATENCY_MS ?? 250);
+  const perf = { latencyMs: LAT };
+  await fetch(`${MOCK}/__latency?ms=${LAT}`);
+  for (const [name, path] of [['dashboard', '/admin'], ['tiket', '/admin/tiket'], ['detail', `/admin/tiket/${tk.id}`], ['master-lokasi', '/admin/master/lokasi']]) {
+    await page.goto(`${APP}${path}`);
+    const runs = [];
+    for (let i = 0; i < 3; i++) {
+      await fetch(`${MOCK}/__count?reset=1`);
+      const t0 = Date.now();
+      const r = await page.goto(`${APP}${path}`, { waitUntil: 'domcontentloaded' });
+      runs.push({ ms: Date.now() - t0, supabaseCalls: (await (await fetch(`${MOCK}/__count`)).json()).count, status: r.status() });
+    }
+    perf[name] = runs.sort((a, b) => a.ms - b.ms)[1];
+  }
+  await fetch(`${MOCK}/__latency?ms=0`);
+  writeFileSync(OUT + 'perf.json', JSON.stringify(perf, null, 2));
+  console.log('PERF ' + JSON.stringify(perf));
 
   check('tanpa error JavaScript di browser', errors.length === 0, errors.join(' | '));
   await browser.close();

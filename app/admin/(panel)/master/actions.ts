@@ -1,6 +1,7 @@
 'use server';
 import { randomBytes } from 'node:crypto';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
+import { REF_TAG } from '@/lib/data';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { requireAdmin } from '@/lib/auth';
@@ -12,6 +13,7 @@ const n = (f: FormData, k: string) => { const v = s(f, k); return v === '' ? nul
 const on = (f: FormData, k: string) => f.get(k) === 'on' || f.get(k) === 'true';
 
 function done(path: string, err?: string | null, ok?: string): never {
+  revalidateTag(REF_TAG);
   revalidatePath('/', 'layout');
   redirect(`${path}?${err ? 'e=' + encodeURIComponent(err) : 'ok=' + encodeURIComponent(ok ?? 'Tersimpan')}`);
 }

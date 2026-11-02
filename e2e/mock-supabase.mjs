@@ -52,6 +52,8 @@ function orderLimit(params) {
 const val = v => (v !== null && typeof v === 'object' && !Array.isArray(v) ? JSON.stringify(v) : v);
 
 const driveFiles = new Map(), driveEcho = new Map();
+// Simulasi jarak server↔database (ms per panggilan) dan penghitung panggilan.
+let latency = Number(process.env.MOCK_LATENCY_MS ?? 0), requestCount = 0;
 let driveSeq = 0;
 
 async function handle(req, body) {
@@ -69,8 +71,14 @@ async function handle(req, body) {
   }
   if (url.pathname === '/macros/echo') return { status: 200, json: driveEcho.get(url.searchParams.get('k')) };
   if (url.pathname === '/__sql') return { status: 200, json: (await db.query(body.sql, body.args ?? [])).rows };
-  if (url.pathname === '/auth/v1/user' && req.headers.authorization === 'Bearer e2e-access') {
-    const [u] = (await db.query(`select id, email from auth.users where email = 'hendri@e2e.test'`)).rows;
+  if (url.pathname === '/__latency') { latency = Number(url.searchParams.get('ms') ?? 0); return { status: 200, json: { latency } }; }
+  if (url.pathname === '/__count') { const out = { count: requestCount }; if (url.searchParams.get('reset')) requestCount = 0; return { status: 200, json: out }; }
+  // Sesi uji: JWT HS256 dengan tanda tangan "e2e"; sub harus ada di auth.users.
+  const bearer = /^Bearer (.+)$/.exec(req.headers.authorization ?? '')?.[1] ?? '';
+  if (url.pathname === '/auth/v1/user' && bearer.endsWith('.e2e')) {
+    let sub = '';
+    try { sub = JSON.parse(Buffer.from(bearer.split('.')[1], 'base64url').toString()).sub; } catch { /* token rusak */ }
+    const [u] = sub ? (await db.query(`select id, email from auth.users where id::text = $1`, [sub])).rows : [];
     if (u) return { status: 200, json: { id: u.id, aud: 'authenticated', role: 'authenticated', email: u.email, app_metadata: {}, user_metadata: {}, created_at: new Date().toISOString() } };
   }
   if (url.pathname.startsWith('/auth/v1/')) return { status: 401, json: { code: 401, msg: 'no session' } };
@@ -122,6 +130,10 @@ http.createServer((req, res) => {
   req.on('data', c => (data += c));
   req.on('end', async () => {
     try {
+      if (/^\/(rest|auth)\/v1\//.test(req.url)) {
+        requestCount++;
+        if (latency) await new Promise(r => setTimeout(r, latency));
+      }
       const out = await handle(req, data ? JSON.parse(data) : null);
       res.writeHead(out.status, { 'Content-Type': 'application/json', ...(out.headers ?? {}) });
       res.end(out.json === null && out.status === 201 ? '' : JSON.stringify(out.json));

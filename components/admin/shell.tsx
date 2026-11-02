@@ -7,7 +7,7 @@ import { Logo, cx } from '../ui';
 import { ThemeToggle } from './theme-toggle';
 
 const ICONS = { dash: LayoutDashboard, tiket: KanbanSquare, jadwal: CalendarDays, laporan: BarChart3, qr: Printer, master: Database, profil: UserCircle } as const;
-export interface NavItem { href: string; label: string; icon: keyof typeof ICONS; badge?: number }
+export interface NavItem { href: string; label: string; icon: keyof typeof ICONS; badge?: React.ReactNode }
 
 export function AdminShell({ nav, user, signOut, children }: { nav: NavItem[]; user: { nama: string; peran: string }; signOut: () => Promise<void>; children: React.ReactNode }) {
   const path = usePathname();
@@ -27,7 +27,7 @@ export function AdminShell({ nav, user, signOut, children }: { nav: NavItem[]; u
             className={cx('flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-semibold', active(n.href) ? 'bg-brand-50 text-brand-text' : 'text-slate-600 hover:bg-slate-100')}>
             <I className="size-5 shrink-0" aria-hidden />
             {!compact && <span className="flex-1">{n.label}</span>}
-            {!compact && n.badge ? <span className="rounded-full bg-brand-100 px-1.5 text-[11px] font-semibold leading-4 text-brand-text">{n.badge}</span> : null}
+            {!compact && n.badge}
           </Link>
         );
       })}

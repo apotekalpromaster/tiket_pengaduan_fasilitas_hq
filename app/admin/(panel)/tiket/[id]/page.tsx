@@ -24,10 +24,13 @@ export default async function TicketDetail({ params }: { params: Promise<{ id: s
   const t = await getTicket(id);
   if (!t) notFound();
   if (admin.role === 'teknisi' && t.assignee_admin_id !== admin.id) notFound();
-  const [events, photos, notifs, ref, work] = await Promise.all([getEvents(id), getPhotos(id), getNotifications(id), getRefData(), workConfig()]);
-  const { data: techRows } = await db().from('admins').select('id, nama').eq('team_id', t.team_id).eq('role', 'teknisi').eq('aktif', true).order('nama');
-  const { data: dupRows } = await db().from('tickets').select('id, code, issue').eq('location_id', t.location_id).in('status', OPEN_STATUSES).neq('id', t.id).limit(20);
-  const { data: staffRows } = await db().from('tickets').select('assignee_name').eq('team_id', t.team_id).eq('exec_type', 'internal').not('assignee_name', 'is', null).is('assignee_admin_id', null).order('created_at', { ascending: false }).limit(50);
+  // Semua data pendukung dimuat sekaligus (satu putaran ke database).
+  const [events, photos, notifs, ref, work, { data: techRows }, { data: dupRows }, { data: staffRows }] = await Promise.all([
+    getEvents(id), getPhotos(id), getNotifications(id), getRefData(), workConfig(),
+    db().from('admins').select('id, nama').eq('team_id', t.team_id).eq('role', 'teknisi').eq('aktif', true).order('nama'),
+    db().from('tickets').select('id, code, issue').eq('location_id', t.location_id).in('status', OPEN_STATUSES).neq('id', t.id).limit(20),
+    db().from('tickets').select('assignee_name').eq('team_id', t.team_id).eq('exec_type', 'internal').not('assignee_name', 'is', null).is('assignee_admin_id', null).order('created_at', { ascending: false }).limit(50),
+  ]);
   const staffNames = [...new Set((staffRows ?? []).map(r => r.assignee_name as string))].slice(0, 10);
   const allowed = availableActions({ type: 'admin', admin }, t);
   const before = photos.filter(p => p.fase === 'before'), after = photos.filter(p => p.fase === 'after');

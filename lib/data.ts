@@ -1,5 +1,6 @@
 import 'server-only';
 import { cache } from 'react';
+import { unstable_cache } from 'next/cache';
 import { db, must } from './supabase/admin';
 import { makeConfig } from './workhours';
 import type { RefData, Settings, Ticket, TicketEvent, TicketPhoto, TicketView, NotificationLog } from './types';
@@ -9,8 +10,14 @@ const DEFAULT_SETTINGS: Settings = {
   ops_email: 'operation@apotekalpro.id', divisi: [], updated_at: '',
 };
 
-/** Master data, dimuat sekali per request. */
-export const getRefData = cache(async (): Promise<RefData> => {
+export const REF_TAG = 'ref';
+
+/**
+ * Master data (lokasi, kategori, tim, pengaturan, ...). Jarang berubah, jadi
+ * di-cache lintas request; semua aksi master data memanggil revalidateTag(REF_TAG).
+ * Perubahan langsung lewat SQL Editor baru terlihat setelah maksimal 60 detik.
+ */
+const loadRefData = unstable_cache(async (): Promise<RefData> => {
   const c = db();
   const [teams, areaTypes, locations, categories, quickIssues, holidays, settings] = await Promise.all([
     c.from('teams').select('*').order('urutan'),
@@ -26,7 +33,9 @@ export const getRefData = cache(async (): Promise<RefData> => {
     categories: must(categories, 'memuat kategori'), quickIssues: must(quickIssues, 'memuat masalah umum'),
     holidays: must(holidays, 'memuat libur'), settings: (must(settings, 'memuat pengaturan') as Settings | null) ?? DEFAULT_SETTINGS,
   };
-});
+}, ['ref-data-v1'], { tags: [REF_TAG], revalidate: 60 });
+
+export const getRefData = cache(() => loadRefData());
 
 export async function workConfig() {
   const r = await getRefData();
