@@ -10,7 +10,7 @@ const MOCK = 'http://127.0.0.1:54329', APP = 'http://localhost:3100', OUT = new 
 mkdirSync(OUT, { recursive: true });
 const env = {
   ...process.env, NEXT_TELEMETRY_DISABLED: '1', NEXT_PUBLIC_SUPABASE_URL: MOCK, NEXT_PUBLIC_SUPABASE_ANON_KEY: 'anon-test', SUPABASE_SERVICE_ROLE_KEY: 'service-test',
-  APP_BASE_URL: APP, CRON_SECRET: 'cron-test',
+  APP_BASE_URL: APP, CRON_SECRET: 'cron-test', DRIVE_SCRIPT_URL: `${MOCK}/macros/s/e2e/exec`, DRIVE_SCRIPT_SECRET: 'drive-e2e-secret',
 };
 const procs = [];
 const start = (cmd, args) => { const p = spawn(cmd, args, { env, stdio: ['ignore', 'pipe', 'pipe'], detached: true }); procs.push(p); return p; };
@@ -57,6 +57,10 @@ try {
   await page.selectOption('#f-div', 'Finance');
   await page.fill('#f-wa', '0812-3456-7890');
   await page.fill('#f-desc', 'Galon dispenser habis, stok cadangan juga kosong.');
+  const PNG = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==', 'base64');
+  await page.setInputFiles('#f-photo', { name: 'galon.png', mimeType: 'image/png', buffer: PNG });
+  await page.getByRole('img', { name: 'Foto 1' }).waitFor({ timeout: 5000 });
+  check('foto dipilih dan dikompres di browser', await page.getByText(/Dikompres otomatis · \d+ KB/).isVisible());
   await page.getByRole('button', { name: 'Kirim laporan' }).click();
   await page.waitForURL(/\/t\/[A-Za-z0-9_-]+\?baru=1/, { timeout: 20000 });
   check('halaman sukses', await page.getByRole('heading', { name: 'Laporan terkirim' }).isVisible());
@@ -73,6 +77,16 @@ try {
   await new Promise(r => setTimeout(r, 1500));
   const notes = await sql(`select channel, status, target from fasilitas.notifications where ticket_id = $1`, [t.id]);
   check('notifikasi email tercatat (dilewati, SMTP belum diatur)', notes.some(n => n.channel === 'email' && n.status === 'skipped' && n.target.includes('operation@apotekalpro.id')), JSON.stringify(notes));
+  const ph = await sql(`select id, fase, mime, drive_file_id from fasilitas.ticket_photos where ticket_id = $1`, [t.id]);
+  check('foto laporan tersimpan ke Drive (Apps Script)', ph.length === 1 && ph[0].fase === 'before' && ph[0].drive_file_id.startsWith('e2efile_'), JSON.stringify(ph));
+  if (ph[0]) {
+    const img = await fetch(`${APP}/api/foto/${ph[0].id}?t=${t.public_token}`);
+    check('foto tampil lewat proxy dengan token pelapor', img.ok && img.headers.get('content-type') === 'image/jpeg' && (await img.arrayBuffer()).byteLength > 50, String(img.status));
+    const noTok = await fetch(`${APP}/api/foto/${ph[0].id}`);
+    check('foto tanpa token/login ditolak', noTok.status === 403, String(noTok.status));
+    await page.reload();
+    check('gambar termuat di halaman status', await page.locator('img[alt="Foto laporan"]').evaluate(el => el.complete && el.naturalWidth > 0));
+  }
   const ev = await sql(`select action, to_status from fasilitas.ticket_events where ticket_id = $1`, [t.id]);
   check('riwayat dibuat', ev.some(e => e.action === 'create' && e.to_status === 'BARU'));
 
@@ -175,6 +189,8 @@ try {
     await page.fill('#f-note', 'Saluran urinoir dibersihkan');
   });
   const evs = await sql(`select action from fasilitas.ticket_events where ticket_id = $1 order by at`, [tk.id]);
+  const after = await sql(`select fase from fasilitas.ticket_photos where ticket_id = $1 and fase = 'after'`, [tk.id]);
+  check('foto sesudah tersimpan ke Drive', after.length === 1, String(after.length));
   check('audit trail lengkap', ['create', 'accept', 'schedule', 'approve', 'start', 'finish'].every(a => evs.some(e => e.action === a)), evs.map(e => e.action).join(','));
   await page.goto(`${APP}/admin/tiket/${tk.id}`);
   check('detail menampilkan riwayat', await page.getByText('Saluran urinoir dibersihkan').first().isVisible());
@@ -194,6 +210,10 @@ try {
   await visit('/admin/master/admin', 'master admin', 'hendri@e2e.test');
   await visit('/admin/master/libur', 'master libur', 'Daftar libur');
   await visit('/admin/master/pengaturan', 'pengaturan', 'Status integrasi');
+  await page.getByRole('button', { name: 'Tes koneksi Google Drive' }).click();
+  await page.getByText('Terhubung ke Drive akun apotekalpro.master@gmail.com').waitFor({ timeout: 10000 });
+  check('tes koneksi Drive di Pengaturan', await page.getByText('Terhubung ke Drive akun apotekalpro.master@gmail.com').isVisible());
+  check('peringatan format URL Apps Script', await page.getByText('Web app URL').first().isVisible());
   await visit('/admin/profil', 'profil', 'Ganti password');
   await page.setViewportSize({ width: 390, height: 844 });
   await visit('/admin/tiket', 'kanban di HP', 'Kanban');

@@ -51,8 +51,23 @@ function orderLimit(params) {
 }
 const val = v => (v !== null && typeof v === 'object' && !Array.isArray(v) ? JSON.stringify(v) : v);
 
+const driveFiles = new Map(), driveEcho = new Map();
+let driveSeq = 0;
+
 async function handle(req, body) {
   const url = new URL(req.url, 'http://x');
+  // Tiruan Web App Apps Script (apps-script/Code.gs): POST /exec → 302 → GET hasil.
+  if (url.pathname === '/macros/s/e2e/exec' && req.method === 'POST') {
+    const key = String(++driveSeq);
+    let out;
+    if (body?.secret !== 'drive-e2e-secret') out = { ok: false, error: 'AUTH' };
+    else if (body.action === 'upload') { const id = `e2efile_${key.padStart(8, '0')}`; driveFiles.set(id, { mime: body.mime, data: body.data }); out = { ok: true, id }; }
+    else if (body.action === 'get') out = driveFiles.has(body.id) ? { ok: true, ...driveFiles.get(body.id) } : { ok: false, error: 'NOT_FOUND' };
+    else if (body.action === 'ping') out = { ok: true, folderUrl: 'https://drive.google.com/drive/folders/e2e', account: 'apotekalpro.master@gmail.com' };
+    driveEcho.set(key, out);
+    return { status: 302, json: '', headers: { Location: `/macros/echo?k=${key}` } };
+  }
+  if (url.pathname === '/macros/echo') return { status: 200, json: driveEcho.get(url.searchParams.get('k')) };
   if (url.pathname === '/__sql') return { status: 200, json: (await db.query(body.sql, body.args ?? [])).rows };
   if (url.pathname === '/auth/v1/user' && req.headers.authorization === 'Bearer e2e-access') {
     const [u] = (await db.query(`select id, email from auth.users where email = 'hendri@e2e.test'`)).rows;

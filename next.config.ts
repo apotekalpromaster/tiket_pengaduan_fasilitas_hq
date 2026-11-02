@@ -2,7 +2,7 @@ import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
-  serverExternalPackages: ['exceljs', 'nodemailer', 'google-auth-library'],
+  serverExternalPackages: ['exceljs', 'nodemailer'],
   experimental: {
     // Foto sesudah diunggah lewat server action; batas body Vercel 4,5 MB.
     serverActions: { bodySizeLimit: '4mb' },

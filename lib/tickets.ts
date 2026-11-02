@@ -53,16 +53,14 @@ async function addEvent(ticketId: string, actor: Actor, action: string, note: st
 /** Simpan foto ke Drive dan catat di ticket_photos. Mengembalikan jumlah yang tersimpan. */
 export async function savePhotos(t: Pick<Ticket, 'id' | 'code'>, files: UploadFile[], fase: 'before' | 'after'): Promise<number> {
   if (!files.length || !integrations.drive) return 0;
-  let n = 0;
-  for (const [i, f] of files.entries()) {
-    try {
-      const ext = f.mime === 'image/png' ? 'png' : f.mime === 'image/webp' ? 'webp' : 'jpg';
-      const id = await uploadPhoto({ name: `${t.code}-${fase === 'before' ? 'laporan' : 'sesudah'}-${Date.now()}-${i + 1}.${ext}`, mime: f.mime, data: f.data, yymm: yymmNow() });
-      must(await db().from('ticket_photos').insert({ ticket_id: t.id, fase, drive_file_id: id, mime: f.mime, size_bytes: f.size }), 'mencatat foto');
-      n++;
-    } catch (e) { console.error('PHOTO', t.code, e); }
-  }
-  return n;
+  const stamp = Date.now();
+  const results = await Promise.allSettled(files.map(async (f, i) => {
+    const ext = f.mime === 'image/png' ? 'png' : f.mime === 'image/webp' ? 'webp' : 'jpg';
+    const id = await uploadPhoto({ name: `${t.code}-${fase === 'before' ? 'laporan' : 'sesudah'}-${stamp}-${i + 1}.${ext}`, mime: f.mime, data: f.data, yymm: yymmNow() });
+    must(await db().from('ticket_photos').insert({ ticket_id: t.id, fase, drive_file_id: id, mime: f.mime, size_bytes: f.size }), 'mencatat foto');
+  }));
+  results.forEach(r => { if (r.status === 'rejected') console.error('PHOTO', t.code, r.reason); });
+  return results.filter(r => r.status === 'fulfilled').length;
 }
 
 export async function createTicket(input: NewTicketInput, files: UploadFile[]) {

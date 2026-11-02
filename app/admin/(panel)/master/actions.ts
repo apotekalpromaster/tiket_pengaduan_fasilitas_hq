@@ -156,3 +156,19 @@ export async function resetPassword(f: FormData) {
   await db().from('admins').update({ must_change_password: true }).eq('user_id', a.user_id);
   await doneSecret(`Password ${a.nama} diatur ulang. Password sementara: ${password}`);
 }
+
+// ---------- Tes koneksi Google Drive (Apps Script) ----------
+export type DriveTestState = { ok?: string; folderUrl?: string; error?: string };
+
+export async function testDrive(): Promise<DriveTestState> {
+  await requireAdmin(['super_admin']);
+  const { integrations } = await import('@/lib/env');
+  if (!integrations.drive) return { error: 'DRIVE_SCRIPT_URL dan DRIVE_SCRIPT_SECRET belum diisi di Vercel.' };
+  try {
+    const { pingDrive } = await import('@/lib/drive');
+    const r = await pingDrive();
+    return { ok: `Terhubung ke Drive akun ${r.account || 'Apps Script'}.`, folderUrl: r.folderUrl };
+  } catch (e) {
+    return { error: (e as Error).message };
+  }
+}

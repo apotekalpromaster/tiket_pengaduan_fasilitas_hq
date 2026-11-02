@@ -12,5 +12,6 @@ export async function sendEmail(m: EmailMsg) {
       auth: { user: env.smtp.user, pass: env.smtp.pass },
     });
   }
-  await transport.sendMail({ from: env.smtp.from, to: m.to.join(', '), subject: m.subject, html: m.html, text: m.text });
+  // Balasan pelapor diarahkan ke email operasional, bukan ke inbox Gmail pengirim.
+  await transport.sendMail({ from: env.smtp.from, replyTo: env.opsEmail, to: m.to.join(', '), subject: m.subject, html: m.html, text: m.text });
 }

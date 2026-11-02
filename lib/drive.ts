@@ -1,70 +1,64 @@
 import 'server-only';
-import { JWT } from 'google-auth-library';
 import { env, integrations } from './env';
 
 /**
- * Foto disimpan di Shared Drive kantor lewat Service Account.
- * Service Account tidak punya kuota "My Drive", jadi GOOGLE_DRIVE_FOLDER_ID
- * wajib folder di dalam Shared Drive dengan akun ini sebagai Content Manager.
+ * Foto disimpan di Google Drive akun Gmail kantor lewat Google Apps Script
+ * (apps-script/Code.gs, di-deploy sebagai Web App). Akun Gmail gratis tidak
+ * punya Shared Drive, dan Service Account tidak punya kuota penyimpanan,
+ * jadi penyimpanan harus berjalan atas nama akun itu sendiri.
  */
-const API = 'https://www.googleapis.com/drive/v3';
-const UPLOAD = 'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&supportsAllDrives=true&fields=id';
-const COMMON = 'supportsAllDrives=true&includeItemsFromAllDrives=true';
+const TIMEOUT_MS = 25_000;
 
-let jwt: JWT | null = null;
-async function token(): Promise<string> {
-  if (!jwt) jwt = new JWT({ email: env.google.email, key: env.google.key, scopes: ['https://www.googleapis.com/auth/drive'] });
-  const t = await jwt.getAccessToken();
-  if (!t.token) throw new Error('DRIVE: gagal mendapatkan token akses.');
-  return t.token;
-}
+const ERRORS: Record<string, string> = {
+  AUTH: 'DRIVE_SCRIPT_SECRET tidak sama dengan SECRET di Apps Script.',
+  SECRET_BELUM_DIGANTI: 'SECRET di Apps Script belum diganti dari nilai contoh.',
+  MIME: 'format foto tidak didukung.',
+  SIZE: 'ukuran foto tidak valid.',
+  NOT_FOUND: 'file tidak ditemukan di Drive.',
+  FORBIDDEN: 'file berada di luar folder Tiket Fasilitas HQ.',
+};
 
-const folderCache = new Map<string, string>();
+type Reply = { ok: boolean; error?: string; message?: string; [k: string]: unknown };
 
-async function monthFolder(yymm: string): Promise<string> {
-  const hit = folderCache.get(yymm);
-  if (hit) return hit;
-  const auth = { Authorization: `Bearer ${await token()}` };
-  const q = encodeURIComponent(`name = '${yymm}' and '${env.google.folderId}' in parents and mimeType = 'application/vnd.google-apps.folder' and trashed = false`);
-  const found = await fetch(`${API}/files?q=${q}&fields=files(id)&${COMMON}`, { headers: auth });
-  if (!found.ok) throw new Error(`DRIVE: cari folder gagal (${found.status})`);
-  const list = (await found.json()) as { files: { id: string }[] };
-  let id = list.files[0]?.id;
-  if (!id) {
-    const made = await fetch(`${API}/files?supportsAllDrives=true&fields=id`, {
-      method: 'POST', headers: { ...auth, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: yymm, mimeType: 'application/vnd.google-apps.folder', parents: [env.google.folderId] }),
+async function call(body: Record<string, unknown>): Promise<Reply> {
+  if (!integrations.drive) throw new Error('DRIVE: belum dikonfigurasi (DRIVE_SCRIPT_URL dan DRIVE_SCRIPT_SECRET).');
+  let r: Response;
+  try {
+    // Apps Script membalas 302 ke googleusercontent.com; fetch mengikutinya dengan GET.
+    r = await fetch(env.drive.url, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, redirect: 'follow',
+      body: JSON.stringify({ ...body, secret: env.drive.secret }), signal: AbortSignal.timeout(TIMEOUT_MS),
     });
-    if (!made.ok) throw new Error(`DRIVE: buat folder gagal (${made.status})`);
-    id = ((await made.json()) as { id: string }).id;
+  } catch (e) {
+    throw new Error(`DRIVE: Apps Script tidak bisa dihubungi (${(e as Error).message}).`);
   }
-  folderCache.set(yymm, id);
-  return id;
+  const text = await r.text();
+  let j: Reply;
+  try { j = JSON.parse(text) as Reply; } catch {
+    // Halaman HTML = URL salah, akses bukan "Anyone", atau skrip belum di-authorize.
+    throw new Error(`DRIVE: balasan Apps Script bukan JSON (HTTP ${r.status}). Periksa URL /exec dan akses "Anyone".`);
+  }
+  if (!j.ok) throw new Error(`DRIVE: ${j.error ?? 'GAGAL'} ${ERRORS[j.error ?? ''] ?? j.message ?? ''}`.trim());
+  return j;
 }
 
 /** Unggah satu foto; kembalikan file id Drive. */
 export async function uploadPhoto(opts: { name: string; mime: string; data: Buffer; yymm: string }): Promise<string> {
-  if (!integrations.drive) throw new Error('DRIVE: belum dikonfigurasi.');
-  const parent = await monthFolder(opts.yymm);
-  const boundary = 'tiket' + Math.random().toString(36).slice(2);
-  const meta = JSON.stringify({ name: opts.name, parents: [parent] });
-  const body = Buffer.concat([
-    Buffer.from(`--${boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${meta}\r\n--${boundary}\r\nContent-Type: ${opts.mime}\r\n\r\n`),
-    opts.data,
-    Buffer.from(`\r\n--${boundary}--`),
-  ]);
-  const r = await fetch(UPLOAD, {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${await token()}`, 'Content-Type': `multipart/related; boundary=${boundary}` },
-    body,
-  });
-  if (!r.ok) throw new Error(`DRIVE: unggah gagal (${r.status} ${await r.text().catch(() => '')})`);
-  return ((await r.json()) as { id: string }).id;
+  const j = await call({ action: 'upload', name: opts.name, mime: opts.mime, yymm: opts.yymm, data: opts.data.toString('base64') });
+  if (typeof j.id !== 'string') throw new Error('DRIVE: balasan unggah tanpa id.');
+  return j.id;
 }
 
-/** Ambil isi file untuk disajikan lewat proxy. */
+/** Ambil isi file untuk disajikan lewat proxy /api/foto. */
 export async function downloadPhoto(fileId: string): Promise<Response> {
-  if (!integrations.drive) throw new Error('DRIVE: belum dikonfigurasi.');
   if (!/^[A-Za-z0-9_-]{10,200}$/.test(fileId)) throw new Error('DRIVE: id file tidak valid.');
-  return fetch(`${API}/files/${fileId}?alt=media&supportsAllDrives=true`, { headers: { Authorization: `Bearer ${await token()}` } });
+  const j = await call({ action: 'get', id: fileId });
+  const bytes = Buffer.from(String(j.data ?? ''), 'base64');
+  return new Response(bytes, { headers: { 'Content-Type': String(j.mime ?? 'image/jpeg') } });
+}
+
+/** Tes koneksi dari halaman Pengaturan. */
+export async function pingDrive(): Promise<{ folderUrl: string; account: string }> {
+  const j = await call({ action: 'ping' });
+  return { folderUrl: String(j.folderUrl ?? ''), account: String(j.account ?? '') };
 }

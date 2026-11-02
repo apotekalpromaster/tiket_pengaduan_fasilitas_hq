@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
 import { requireAdmin } from '@/lib/auth';
 import { getRefData } from '@/lib/data';
-import { integrations } from '@/lib/env';
-import { Button, Card, Chip, Field, Input, Textarea } from '@/components/ui';
+import { driveUrlLooksRight, integrations } from '@/lib/env';
+import { Button, Callout, Card, Chip, Field, Input, Textarea } from '@/components/ui';
+import { DriveTest } from '@/components/admin/drive-test';
 import { MasterHeader } from '@/components/admin/master-nav';
 import { saveSettings } from '../actions';
 
@@ -14,8 +15,8 @@ export default async function SettingsPage({ searchParams }: { searchParams: Pro
   const sp = await searchParams;
   const { settings: s } = await getRefData();
   const status: [string, boolean, string][] = [
-    ['Email (SMTP)', integrations.email, 'SMTP_HOST, SMTP_USER, SMTP_PASS'], ['Telegram', integrations.telegram, 'TELEGRAM_BOT_TOKEN, TELEGRAM_WEBHOOK_SECRET'],
-    ['Google Drive', integrations.drive, 'GOOGLE_SERVICE_ACCOUNT_EMAIL, GOOGLE_PRIVATE_KEY, GOOGLE_DRIVE_FOLDER_ID'], ['Anti-spam Turnstile', integrations.turnstile, 'NEXT_PUBLIC_TURNSTILE_SITE_KEY, TURNSTILE_SECRET_KEY'],
+    ['Email (Gmail)', integrations.email, 'SMTP_USER, SMTP_PASS'], ['Telegram', integrations.telegram, 'TELEGRAM_BOT_TOKEN, TELEGRAM_WEBHOOK_SECRET'],
+    ['Google Drive (Apps Script)', integrations.drive, 'DRIVE_SCRIPT_URL, DRIVE_SCRIPT_SECRET'], ['Anti-spam Turnstile', integrations.turnstile, 'NEXT_PUBLIC_TURNSTILE_SITE_KEY, TURNSTILE_SECRET_KEY'],
   ];
   return (
     <>
@@ -38,6 +39,11 @@ export default async function SettingsPage({ searchParams }: { searchParams: Pro
         <ul className="flex flex-col gap-2 text-sm">
           {status.map(([n, ok, vars]) => <li key={n} className="flex flex-wrap items-center gap-2"><Chip tone={ok ? 'emerald' : 'amber'}>{ok ? 'Aktif' : 'Belum diatur'}</Chip><b className="font-semibold">{n}</b>{!ok && <span className="text-xs text-muted">{vars}</span>}</li>)}
         </ul>
+        {integrations.drive && !driveUrlLooksRight() && (
+          <Callout tone="amber" className="mt-3">DRIVE_SCRIPT_URL tidak berbentuk <code>https://script.google.com/macros/s/…/exec</code>. Pastikan menyalin <b>Web app URL</b> dari Deploy, bukan link editor atau URL berakhiran /dev.</Callout>
+        )}
+        <div className="mt-4"><DriveTest /></div>
+        <p className="mt-3 text-xs text-muted">Panduan pengisian: docs/PANDUAN_GOOGLE.md di repository.</p>
       </Card>
     </>
   );

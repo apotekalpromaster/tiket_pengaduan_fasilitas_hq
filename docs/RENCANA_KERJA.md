@@ -11,7 +11,7 @@ Repo: `apotekalpromaster/tiket_pengaduan_fasilitas_hq` (masih kosong), branch `c
 |---|---|
 | Frontend/Backend | Next.js (App Router, TypeScript, **Tailwind v4**), deploy Vercel |
 | Database | Supabase kantor `https://wjbyrbbqumqpbqhkdpus.supabase.co`, hanya untuk record |
-| Foto | Google Drive perusahaan (upload lewat server) |
+| Foto | Google Drive akun apotekalpro.master@gmail.com lewat Google Apps Script |
 | Identitas pelapor | Tanpa login; Nama, Divisi, No WA diingat di browser |
 | Notifikasi | Email ke **operation@apotekalpro.id** + Telegram Bot (grup menyusul); WA ditunda |
 | Penanganan | Routing per kategori → tim (OSS / OASIS / Housekeeping), admin bisa assign ulang |
@@ -21,9 +21,9 @@ Repo: `apotekalpromaster/tiket_pengaduan_fasilitas_hq` (masih kosong), branch `c
 | Desain | Design system **Aset Kantor Alpro** (artifact `PknXojpsHtasJaPFPXCzfL`) |
 
 ## Koreksi teknis penting
-1. **Google Drive:** Service Account **tidak punya kuota** di "My Drive", jadi upload akan gagal. Wajib pakai **Shared Drive** (Service Account sebagai *Content Manager*). Struktur: `Tiket Fasilitas HQ/{YYYY-MM}/{kode_tiket}/`.
+1. **Google Drive:** akun Google gratis tidak punya Shared Drive, dan Service Account tidak punya kuota, jadi foto disimpan lewat **Google Apps Script** (Web App) atas nama akun Gmail itu sendiri. Lihat `docs/PANDUAN_GOOGLE.md`.
 2. **Supabase bersama:** pakai schema terpisah `fasilitas` + RLS. Schema ini **harus ditambahkan ke "Exposed schemas"** (Settings → API) supaya `supabase-js` (`db: { schema: 'fasilitas' }`) bisa mengaksesnya. Service role key hanya disimpan di env Vercel, tidak pernah di-commit.
-3. **Email:** Supabase tidak mengirim email bebas. Pakai SMTP Google Workspace (Nodemailer + App Password akun pengirim, mis. `noreply@apotekalpro.id`).
+3. **Email:** Supabase tidak mengirim email bebas. Pakai SMTP Gmail (Nodemailer + App Password akun `apotekalpro.master@gmail.com`).
 4. **Ejaan:** "Musalah" → **"Musala"** (baku KBBI) di label QR & master data.
 
 ## Desain — ikut Aset Kantor Alpro (aplikasi sejenis: Room Booking HQ, Short ED, Lapor Sales)
@@ -152,7 +152,7 @@ app/
   admin/qr/                # generator & cetak stiker QR
   admin/laporan/           # laporan + export xlsx
   api/tickets/route.ts     # buat tiket (Turnstile, rate-limit, cek duplikat)
-  api/upload/route.ts      # foto → Shared Drive
+  api/foto/[id]/route.ts   # foto ← Drive via Apps Script
   api/cron/route.ts        # eskalasi SLA + auto-close (Vercel Cron)
   api/telegram/webhook     # tombol inline [Terima] [Ambil tiket]
 components/ui.tsx          # komponen ala Aset Kantor
@@ -172,7 +172,7 @@ Output: `prototype/index.html` di repo (commit + push ke branch) dan dipublikasi
 ## Tahapan & Timeline (±4 minggu)
 | Fase | Durasi | Output |
 |---|---|---|
-| 0. Persiapan | 2 hari | Shared Drive + Service Account, akun SMTP, exposed schema Supabase, domain, grup Telegram |
+| 0. Persiapan | 2 hari | Apps Script Drive + App Password Gmail, exposed schema Supabase, domain, grup Telegram |
 | 1. Fondasi | 3 hari | Scaffold Next.js, tema Aset Kantor, migrasi + seed, login admin |
 | 2. Alur pelapor | 4 hari | Form `/r/[kode]`, chip, upload foto ke Drive, cek duplikat, halaman sukses & `/t/[kode]` |
 | 3. Notifikasi | 2 hari | Template email Alpro → operation@, Telegram per tim + tombol inline |
@@ -186,21 +186,21 @@ Output: `prototype/index.html` di repo (commit + push ke branch) dan dipublikasi
 | Komponen | Biaya |
 |---|---|
 | Vercel | Hobby Rp 0 (ToS non-komersial) → disarankan **Pro US$20/bln** untuk penggunaan resmi perusahaan |
-| Supabase, Shared Drive, SMTP Workspace, Telegram, Turnstile | Rp 0 (memakai infrastruktur yang sudah ada) |
+| Supabase, Google Drive (Apps Script), Gmail SMTP, Telegram, Turnstile | Rp 0 (memakai infrastruktur yang sudah ada) |
 | Stiker QR vinyl tahan air (24 titik + cadangan) | ±Rp 100–200 rb sekali |
 
 ## Masih menunggu (tidak menahan Fase 1–2)
 1. Target SLA per kategori (TBC). Sampai dikonfirmasi, SLA nonaktif
 2. Ambang biaya yang perlu approval (usulan Rp 1 jt)
 3. Grup Telegram per tim (akan ditambahkan)
-4. Kredensial lewat env Vercel: Supabase anon/service key, JSON Service Account + ID Shared Drive, SMTP App Password
+4. Kredensial lewat env Vercel: Supabase anon/service key, URL + secret Apps Script, App Password Gmail
 5. Domain/subdomain (usulan `tiket.apotekalpro.id`)
 6. Nama & email admin per tim (OSS, OASIS, Housekeeping)
 
 ## Verifikasi (end-to-end)
 1. `npm run lint && npm run build` bersih; unit test `lib/workhours.ts` (Sen–Jum 09–16, libur, lintas hari/akhir pekan) dan logika duplikat.
 2. Migrasi di-apply ke Supabase (schema `fasilitas`); cek request anon langsung ke tabel ditolak RLS; seed menghasilkan 4 lantai / 24 lokasi.
-3. Playwright (viewport HP): `/r/L2-PANTRY` → lokasi terkunci, chip Pantry muncul → isi + foto → submit → kode tiket tampil, record ada di DB, file ada di Shared Drive, email masuk ke operation@, pesan Telegram terkirim (grup test).
+3. Playwright (viewport HP): `/r/L2-PANTRY` → lokasi terkunci, chip Pantry muncul → isi + foto → submit → kode tiket tampil, record ada di DB, file ada di Drive (folder Tiket Fasilitas HQ), email masuk ke operation@, pesan Telegram terkirim (grup test).
 4. Submit kedua di lokasi + kategori yang sama → muncul prompt "Saya juga mengalami", `me_too_count` bertambah.
 5. Alur admin: Terima → Jadwalkan → Selesai (foto sesudah) → konfirmasi pelapor → Closed; `ticket_events` lengkap. Biaya di atas ambang → status Menunggu approval Ops Manager.
 6. Cek tampilan terang/gelap dan kontras sesuai token Aset Kantor; cetak 1 lembar QR dan scan dengan Android & iPhone.

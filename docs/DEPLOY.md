@@ -15,8 +15,8 @@ Lihat `.env.example`. Ringkasnya:
 |---|---|
 | `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` | Supabase → Project Settings → API. Service role **hanya** di Vercel, jangan dibagikan |
 | `APP_BASE_URL` | Domain final, mis. `https://tiket.apotekalpro.id`. Dipakai di QR, jadi tetapkan sebelum mencetak stiker |
-| `GOOGLE_SERVICE_ACCOUNT_EMAIL`, `GOOGLE_PRIVATE_KEY`, `GOOGLE_DRIVE_FOLDER_ID` | Langkah 3 |
-| `SMTP_*`, `MAIL_FROM`, `MAIL_OPS_TO` | Langkah 4 |
+| `DRIVE_SCRIPT_URL`, `DRIVE_SCRIPT_SECRET` | Langkah 3 (Apps Script) |
+| `SMTP_USER`, `SMTP_PASS`, `MAIL_OPS_TO` | Langkah 4 (Gmail) |
 | `TELEGRAM_BOT_TOKEN`, `TELEGRAM_WEBHOOK_SECRET` | Langkah 5 |
 | `NEXT_PUBLIC_TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY` | Cloudflare → Turnstile → Add site (opsional, anti-spam) |
 | `CRON_SECRET` | String acak ≥ 32 karakter. Vercel Cron mengirimkannya otomatis |
@@ -24,21 +24,16 @@ Lihat `.env.example`. Ringkasnya:
 Integrasi yang env-nya kosong dilewati dengan aman: notifikasinya tercatat "Dilewati" di detail tiket. Statusnya bisa dilihat di **Master data → Pengaturan → Status integrasi**.
 
 ## 3. Google Drive (foto)
-Service Account **tidak punya kuota "My Drive"**, jadi folder tujuan wajib berada di **Shared Drive**.
-1. Google Cloud Console → project kantor → aktifkan **Google Drive API**.
-2. IAM → Service Accounts → Create → buat key **JSON**.
-3. Google Drive → Shared drives → buat/gunakan Shared Drive, mis. *Tiket Fasilitas HQ* → **Manage members** → tambahkan email Service Account sebagai **Content manager**.
-4. Buka folder tujuan di Shared Drive itu; ID folder adalah bagian URL setelah `/folders/`.
-5. Isi `GOOGLE_SERVICE_ACCOUNT_EMAIL` (`client_email`), `GOOGLE_PRIVATE_KEY` (`private_key`, tempel apa adanya termasuk `\n`), dan `GOOGLE_DRIVE_FOLDER_ID`.
+Foto disimpan lewat **Google Apps Script** di Drive `apotekalpro.master@gmail.com` (folder **Tiket Fasilitas HQ**). Tidak memakai Google Cloud Console maupun Service Account.
 
-Foto tersimpan di subfolder per bulan (`2610`, `2611`, ...). Semua foto privat dan hanya tampil lewat aplikasi.
+Langkah klik demi klik: **[PANDUAN_GOOGLE.md bagian B](PANDUAN_GOOGLE.md#b-penyimpanan-foto-lewat-google-apps-script)**. Hasil akhirnya `DRIVE_SCRIPT_URL` dan `DRIVE_SCRIPT_SECRET`.
 
-## 4. Email (SMTP Google Workspace)
-1. Siapkan akun pengirim, mis. `noreply@apotekalpro.id`, dengan 2-Step Verification aktif.
-2. Akun Google → Security → **App passwords** → buat untuk "Mail".
-3. `SMTP_HOST=smtp.gmail.com`, `SMTP_PORT=465`, `SMTP_USER=noreply@apotekalpro.id`, `SMTP_PASS=<app password>`.
+## 4. Email (Gmail gratis)
+Email dikirim dari `apotekalpro.master@gmail.com` lewat SMTP Gmail dengan **App Password**.
 
-Laporan baru, eskalasi, dan permintaan approval dikirim ke `operation@apotekalpro.id`, ditambah email tambahan per tim. Pelapor menerima email jadwal dan selesai bila mengisi email.
+Langkah klik demi klik: **[PANDUAN_GOOGLE.md bagian A](PANDUAN_GOOGLE.md#a-email-lewat-gmail-gratis)**. Hasil akhirnya `SMTP_USER` dan `SMTP_PASS`.
+
+Tujuan email: laporan baru, eskalasi, dan approval ke `operation@apotekalpro.id` (+ email tambahan per tim). Pelapor menerima email jadwal dan selesai bila mengisi email. Balasan penerima diarahkan ke `operation@apotekalpro.id`.
 
 ## 5. Telegram
 1. Chat **@BotFather** → `/newbot` → simpan token ke `TELEGRAM_BOT_TOKEN`.
@@ -60,7 +55,8 @@ Vercel → Project → Settings → Domains → tambahkan `tiket.apotekalpro.id`
 
 ## 8. Checklist UAT (di Preview)
 - [ ] `/r/L2-PANTRY` dari HP Android dan iPhone: lokasi terkunci, chip Pantry muncul
-- [ ] Kirim laporan dengan foto → kode tiket tampil, foto ada di Shared Drive, email masuk ke operation@, pesan Telegram masuk ke grup Housekeeping
+- [ ] Master data → Pengaturan → **Tes koneksi Google Drive** berhasil
+- [ ] Kirim laporan dengan foto → kode tiket tampil, foto ada di Drive folder *Tiket Fasilitas HQ*, email dari apotekalpro.master@gmail.com masuk ke operation@, pesan Telegram masuk ke grup Housekeeping
 - [ ] Laporan kedua Pantry + "Galon habis" → muncul "Sudah dilaporkan" → "Saya juga mengalami" menambah hitungan
 - [ ] Tombol **Terima** di Telegram oleh admin yang sudah `/link` → status berubah di panel
 - [ ] Jadwalkan dengan biaya Rp 2,5 jt → Ops Manager menerima permintaan approval → Setujui → Dijadwalkan, pelapor menerima email jadwal
